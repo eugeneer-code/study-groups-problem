@@ -1,4 +1,12 @@
-#include <QTest>
-#include "CoreTest.h"
+#include "microtest.h"
+#include "BBSolver.h"
 
-QTEST_MAIN(CoreTest)
+TEST(linkLibrary)
+{
+    BBSolver* solver = new BBSolver();
+    ASSERT_TRUE(solver != nullptr);
+    delete solver;
+}
+
+
+TEST_MAIN();
