@@ -4,7 +4,7 @@
 
 TEST(linkLibrary)
 {
-    BBSolver* solver = new BBSolver();
+    BBSolver* solver = new BBSolver({});
     ASSERT_NOTNULL(solver);
     delete solver;
 }
