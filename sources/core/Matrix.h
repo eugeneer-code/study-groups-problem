@@ -103,6 +103,16 @@ public:
         }
     }
 
+    void removeRow(int row) {
+        if(row < 0 || row >= _rows) return;
+        // TODO: смещение элементов
+    }
+
+    void removeColumn(int col) {
+        if(col < 0 || col >= _columns) return;
+        // TODO: смещение элементов
+    }
+
 private:
     // Выделение памяти
     void allocateMemory(int rows, int cols){
