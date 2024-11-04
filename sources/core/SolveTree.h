@@ -37,6 +37,7 @@ class SolveTree {
 public:
     SolveTree(Matrix<int> m);
     bool nextStep();
+    bool solve();
 
 private:
     SolveTreeItem* findNextNode();

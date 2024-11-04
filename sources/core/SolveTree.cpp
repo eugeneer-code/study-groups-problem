@@ -22,26 +22,49 @@ void SolveTree::reduce(SolveTreeItem* item)
 
 bool SolveTree::nextStep()
 {
+    static int step = 0;
+    std::cout << std::endl << "---------------------------" << step++ << std::endl;
     // находим узел для ветвления с минимальной локальной нижней границей
     auto node = findNextNode();
     if(!node) return false;
     if(node->initMatrix.rows() == 1) return false;
     // определяем оптимальный индекс для фиксации
     auto index = findNextIndex(node);
+    std::cout << "Index [" << index.row << ", " << index.column << "]" << std::endl;
     if(index.row == -1) return false;
     Matrix negative = node->reducedMatrix;
     Matrix positive = node->reducedMatrix;
     // Выбранный маршрут не будет использоваться - ставим ему завышенную оценку
     negative.setData(index.row, index.column, std::numeric_limits<int>::max());
     node->negative = new SolveTreeItem(negative, node->H);
+    std::cout << std::endl << "Negative: " << std::endl;
+    negative.print();
     reduce(node->negative);
+    std::cout << std::endl << "H: " << node->negative->H;
     _items.push_back(node->negative);
     // Выбранный маршрут будет использоваться, убираем его из матрицы
     positive.removeRow(index.row);
     positive.removeColumn(index.column);
     node->positive = new SolveTreeItem(positive, node->H);
+    std::cout << std::endl << "Positive: " << std::endl;
+    positive.print();
+    reduce(node->positive);
+    std::cout << std::endl << "H: " << node->positive->H;
     _items.push_back(node->positive);
     return true;
+}
+
+bool SolveTree::solve()
+{
+    while(nextStep());
+    for(auto item : _items){
+        //std::cout << item->H << item->initMatrix.rows() << std::endl;
+        if(item->initMatrix.rows() == 1) {
+            //std::cout << "H: " << item->H;
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -72,8 +95,11 @@ std::vector<int> SolveTree::rowMin(const IntMatrix& m) const
         int currMin = std::numeric_limits<int>::max();
         for(int col=0; col<m.columns(); col++){
             auto item = m.get(row, col);
+            // Значения М не учитываются при редукции
+            if(item == std::numeric_limits<int>::max()) continue;
             if(item < currMin) currMin = item;
         }
+        if(currMin == std::numeric_limits<int>::max()) currMin = 0;
         minVector.push_back(currMin);
     }
     return minVector;
@@ -89,8 +115,11 @@ std::vector<int> SolveTree::columnMin(const IntMatrix& m) const
         int currMin = std::numeric_limits<int>::max();
         for(int row=0; row<m.rows(); row++){
             auto item = m.get(row, col);
+            // Значения М не учитываются при редукции
+            if(item == std::numeric_limits<int>::max()) continue;
             if(item < currMin) currMin = item;
         }
+        if(currMin == std::numeric_limits<int>::max()) currMin = 0;
         minVector.push_back(currMin);
     }
     return minVector;
@@ -105,6 +134,8 @@ void SolveTree::reductRows(IntMatrix& m, const std::vector<int>& array) const
     for(int row=0; row<m.rows(); row++){
         for(int col=0; col<m.columns(); col++){
             auto item = m.get(row, col);
+            // Значения М не учитываются при редукции
+            if(item > std::numeric_limits<int>::max()/2) continue;
             m.setData(row, col, item - array.at(row));
         }
     }
@@ -119,6 +150,8 @@ void SolveTree::reductColumns(IntMatrix& m, const std::vector<int>& array) const
     for(int row=0; row<m.rows(); row++){
         for(int col=0; col<m.columns(); col++){
             auto item = m.get(row, col);
+            // Значения М не учитываются при редукции
+            if(item > std::numeric_limits<int>::max()/2) continue;
             m.setData(row, col, item - array.at(col));
         }
     }

@@ -97,7 +97,8 @@ public:
         if(_data == nullptr) std::cout << "null" << std::endl;
         for(int i=0; i<_rows; i++){
             for(int j=0; j<_columns; j++){
-                std::cout << _data[i][j] << " ";
+                if(_data[i][j] == std::numeric_limits<T>::max()) std::cout << "M ";
+                else std::cout << _data[i][j] << " ";
             }
             std::cout << std::endl;
         }
