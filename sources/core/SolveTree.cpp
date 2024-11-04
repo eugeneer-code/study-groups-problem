@@ -7,6 +7,7 @@ SolveTree::SolveTree(Matrix<int> m)
 {
     _head = new SolveTreeItem(m);
     reduce(_head);
+    _items.push_back(_head);
 }
 
 void SolveTree::reduce(SolveTreeItem* item)
@@ -17,6 +18,7 @@ void SolveTree::reduce(SolveTreeItem* item)
     reductRows(item->reducedMatrix, item->rowMinCost);
     reductColumns(item->reducedMatrix, item->columnMinCost);
     item->H += costLimit(item->rowMinCost, item->columnMinCost);
+    item->reducedMatrix.print();
 }
 
 bool SolveTree::nextStep()
@@ -27,6 +29,7 @@ bool SolveTree::nextStep()
     if(node->initMatrix.rows() == 1) return false;
     // определяем оптимальный индекс для фиксации
     auto index = findNextIndex(node);
+    if(index.row == -1) return false;
     Matrix negative = node->reducedMatrix;
     Matrix positive = node->reducedMatrix;
     // Выбранный маршрут не будет использоваться - ставим ему завышенную оценку
@@ -39,6 +42,12 @@ bool SolveTree::nextStep()
     positive.removeColumn(index.column);
     node->positive = new SolveTreeItem(positive, node->H);
     _items.push_back(node->positive);
+
+    std::cout << std::endl << "Positive: " << std::endl;
+    positive.print();
+    std::cout << std::endl << "Negative: " << std::endl;
+    negative.print();
+    return true;
 }
 
 /**
@@ -159,5 +168,6 @@ Index SolveTree::findNextIndex(SolveTreeItem* item)
     }
     // Среди нулевых выбираем индекс с наибольшей оценкой
     auto maxItemIt = std::max_element(zeroCost.begin(), zeroCost.end(), [](const auto& lhs, const auto& rhs){ return std::get<1>(lhs) > std::get<1>(rhs);});
+    if(maxItemIt == zeroCost.end()) return {-1, -1};
     return std::get<0>(*maxItemIt);
 }

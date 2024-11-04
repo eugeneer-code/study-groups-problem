@@ -105,12 +105,21 @@ public:
 
     void removeRow(int row) {
         if(row < 0 || row >= _rows) return;
-        // TODO: смещение элементов
+        delete[] _data[row];
+        for(int i=row; i<_rows-1; i++){
+            _data[i] = _data[i+1];
+        }
+        _rows--;
     }
 
     void removeColumn(int col) {
         if(col < 0 || col >= _columns) return;
-        // TODO: смещение элементов
+        for(int row=0; row<_rows; row++){
+            for(int i=col; i<_columns-1; i++){
+                _data[row][i] = _data[row][i+1];
+            }
+        }
+        _columns--;
     }
 
 private:

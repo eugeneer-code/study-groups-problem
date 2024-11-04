@@ -47,6 +47,27 @@ TEST(matrixCreate)
     ASSERT_FALSE(m3 == m2);
 }
 
+TEST(matrixModify)
+{
+    Matrix m({
+      {0, 1, 2},
+      {10, 11, 12},
+      {20, 21, 22},
+      {30, 31, 32}
+    });
+    Matrix m1 = m;
+    m1.removeRow(1);
+    ASSERT_EQ(m1.rows(), 3);
+    ASSERT_EQ(m1.columns(), 3);
+    ASSERT_EQ(m1.get(1,0), 20);
+
+    Matrix m2 = m;
+    m2.removeColumn(1);
+    ASSERT_EQ(m2.rows(), 4);
+    ASSERT_EQ(m2.columns(), 2);
+    ASSERT_EQ(m2.get(2,1), 22);
+}
+
 TEST(solving)
 {
     Matrix m({
