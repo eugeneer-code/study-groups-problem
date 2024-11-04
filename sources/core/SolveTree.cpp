@@ -12,13 +12,12 @@ SolveTree::SolveTree(Matrix<int> m)
 
 void SolveTree::reduce(SolveTreeItem* item)
 {
-    item->rowMinCost = rowMin(item->initMatrix);
-    item->columnMinCost = columnMin(item->initMatrix);
     item->reducedMatrix = item->initMatrix;
+    item->rowMinCost = rowMin(item->reducedMatrix);
     reductRows(item->reducedMatrix, item->rowMinCost);
+    item->columnMinCost = columnMin(item->reducedMatrix);
     reductColumns(item->reducedMatrix, item->columnMinCost);
     item->H += costLimit(item->rowMinCost, item->columnMinCost);
-    item->reducedMatrix.print();
 }
 
 bool SolveTree::nextStep()
@@ -42,11 +41,6 @@ bool SolveTree::nextStep()
     positive.removeColumn(index.column);
     node->positive = new SolveTreeItem(positive, node->H);
     _items.push_back(node->positive);
-
-    std::cout << std::endl << "Positive: " << std::endl;
-    positive.print();
-    std::cout << std::endl << "Negative: " << std::endl;
-    negative.print();
     return true;
 }
 
