@@ -24,27 +24,30 @@ bool SolveTree::nextStep()
 {
     static int step = 0;
     std::cout << std::endl << "---------------------------" << step++ << std::endl;
+    if(step >= 30) return false;
     // находим узел для ветвления с минимальной локальной нижней границей
     auto node = findNextNode();
     if(!node) return false;
     if(node->initMatrix.rows() == 1) return false;
     // определяем оптимальный индекс для фиксации
-    auto index = findNextIndex(node);
-    std::cout << "Index [" << index.row << ", " << index.column << "]" << std::endl;
-    if(index.row == -1) return false;
+    auto indexPos = findNextIndex(node, true);
+    auto indexNeg = findNextIndex(node, false);
+    std::cout << "IndexPos [" << indexPos.row << ", " << indexPos.column << "],   IndeexNeg [" << indexNeg.row << ", " << indexNeg.column << "]" << std::endl;
+    if(indexPos.row == -1) return true; // тупиковая ветка
+    if(indexNeg.row == -1) return true; // тупиковая ветка
     Matrix negative = node->reducedMatrix;
     Matrix positive = node->reducedMatrix;
     // Выбранный маршрут не будет использоваться - ставим ему завышенную оценку
-    negative.setData(index.row, index.column, std::numeric_limits<int>::max());
-    node->negative = new SolveTreeItem(negative, node->H);
+    negative.setData(indexNeg.row, indexNeg.column, std::numeric_limits<int>::max());
+    node->negative = new SolveTreeItem(negative, node->H + indexNeg.cost);
     std::cout << std::endl << "Negative: " << std::endl;
     negative.print();
     reduce(node->negative);
     std::cout << std::endl << "H: " << node->negative->H;
     _items.push_back(node->negative);
     // Выбранный маршрут будет использоваться, убираем его из матрицы
-    positive.removeRow(index.row);
-    positive.removeColumn(index.column);
+    positive.removeRow(indexPos.row);
+    positive.removeColumn(indexPos.column);
     node->positive = new SolveTreeItem(positive, node->H);
     std::cout << std::endl << "Positive: " << std::endl;
     positive.print();
@@ -171,9 +174,9 @@ int SolveTree::costLimit(const std::vector<int>& rows, const std::vector<int>& c
 /**
  * Выбор оптимального элемента для ветвления
  */
-Index SolveTree::findNextIndex(SolveTreeItem* item)
+IndexResult SolveTree::findNextIndex(SolveTreeItem* item, bool positive)
 {
-    std::list<std::tuple<Index, int>> zeroCost;
+    std::list<IndexResult> zeroCost;
     // Проходим по всей матрице
     for(int row=0; row<item->reducedMatrix.rows(); row++){
         for(int col=0; col<item->reducedMatrix.columns(); col++){
@@ -183,18 +186,31 @@ Index SolveTree::findNextIndex(SolveTreeItem* item)
             // Вычисляем оценку для элемента, добавляем в список
             std::list<int> rowItems, colItems;
             for(int i=0;i<item->reducedMatrix.rows(); i++) {
-                if(i != row) rowItems.push_back(item->reducedMatrix.get(i, col));
+                // Ячейки с оценкой М не учитываем
+                auto num = item->reducedMatrix.get(i, col);
+                if(num == std::numeric_limits<int>::max()) continue;
+                if(i != row) rowItems.push_back(num);
             }
             for(int i=0;i<item->reducedMatrix.columns(); i++) {
+                // Ячейки с оценкой М не учитываем
+                auto num = item->reducedMatrix.get(row, i);
+                if(num == std::numeric_limits<int>::max()) continue;
                 if(i != col) colItems.push_back(item->reducedMatrix.get(row, i));
             }
-            // Оценка элемента - сумма минимальных элементов в текущей строке и столбце, исключая текущий элемента
-            int P = *std::min_element(rowItems.begin(), rowItems.end()) + *std::min_element(colItems.begin(), colItems.end());
-            zeroCost.push_back({Index({row, col}), P});
+            // Показывает, что найденный элемент последний в строке или стобце
+            bool lastItem = rowItems.size() == 0 || colItems.size() == 0;
+            // Если идём по неганивной ветке, данную ячейку отрицать нельзя, т.к. не останется выбора по строке или стобцу
+            if(lastItem && !positive) continue;
+            // Оценка элемента - сумма минимальных элементов в текущей строке и столбце, исключая текущий элемент
+            int P = 0;
+            if(!lastItem){
+                P = *std::min_element(rowItems.begin(), rowItems.end()) + *std::min_element(colItems.begin(), colItems.end());
+            }
+            zeroCost.push_back({row, col, P, positive});
         }
     }
     // Среди нулевых выбираем индекс с наибольшей оценкой
-    auto maxItemIt = std::max_element(zeroCost.begin(), zeroCost.end(), [](const auto& lhs, const auto& rhs){ return std::get<1>(lhs) > std::get<1>(rhs);});
+    auto maxItemIt = std::max_element(zeroCost.begin(), zeroCost.end(), [](const auto& lhs, const auto& rhs){ return lhs.cost > rhs.cost;});
     if(maxItemIt == zeroCost.end()) return {-1, -1};
-    return std::get<0>(*maxItemIt);
+    return *maxItemIt;
 }

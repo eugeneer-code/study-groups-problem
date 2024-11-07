@@ -6,9 +6,11 @@
 /**
  * Индекс элемента в матрице решений
  */
-struct Index {
+struct IndexResult {
     int row = -1;
     int column = -1;
+    int cost = 0;
+    bool positive = true;
 };
 
 /**
@@ -21,7 +23,7 @@ struct SolveTreeItem {
     SolveTreeItem* positive = nullptr; // Узел с выбором определённого индекса
     SolveTreeItem* negative = nullptr; // Узел, где индекс не выбран
 
-    Index selectedIndex;  // Выбранный индекс для дальнейшего решения
+    IndexResult selectedIndex;  // Выбранный индекс для дальнейшего решения
     Matrix<int> initMatrix = {};  // Первоначальная матрица узла (задаётся при создании узла)
     Matrix<int> reducedMatrix = {}; // Приведённая матрица
     std::vector<int> rowMinCost; // Минимальные стоимости по столбцам
@@ -47,7 +49,7 @@ private:
     void reductRows(IntMatrix& m, const std::vector<int>& array) const;
     void reductColumns(IntMatrix& m, const std::vector<int>& array) const;
     int costLimit(const std::vector<int>& rows, const std::vector<int>& cols) const;
-    Index findNextIndex(SolveTreeItem* item);
+    IndexResult findNextIndex(SolveTreeItem* item, bool positive);
 
 private:
     SolveTreeItem* _head;

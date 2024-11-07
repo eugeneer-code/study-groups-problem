@@ -2,6 +2,7 @@
 #define MATRIX_H
 #include <initializer_list>
 #include <iostream>
+#include <limits>
 
 /**
  * Класс для описания матрицы
