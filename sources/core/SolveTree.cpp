@@ -33,27 +33,29 @@ bool SolveTree::nextStep()
     auto indexPos = findNextIndex(node, true);
     auto indexNeg = findNextIndex(node, false);
     std::cout << "IndexPos [" << indexPos.row << ", " << indexPos.column << "],   IndeexNeg [" << indexNeg.row << ", " << indexNeg.column << "]" << std::endl;
-    if(indexPos.row == -1) return true; // тупиковая ветка
-    if(indexNeg.row == -1) return true; // тупиковая ветка
-    Matrix negative = node->reducedMatrix;
-    Matrix positive = node->reducedMatrix;
-    // Выбранный маршрут не будет использоваться - ставим ему завышенную оценку
-    negative.setData(indexNeg.row, indexNeg.column, std::numeric_limits<int>::max());
-    node->negative = new SolveTreeItem(negative, node->H + indexNeg.cost);
-    std::cout << std::endl << "Negative: " << std::endl;
-    negative.print();
-    reduce(node->negative);
-    std::cout << std::endl << "H: " << node->negative->H;
-    _items.push_back(node->negative);
-    // Выбранный маршрут будет использоваться, убираем его из матрицы
-    positive.removeRow(indexPos.row);
-    positive.removeColumn(indexPos.column);
-    node->positive = new SolveTreeItem(positive, node->H);
-    std::cout << std::endl << "Positive: " << std::endl;
-    positive.print();
-    reduce(node->positive);
-    std::cout << std::endl << "H: " << node->positive->H;
-    _items.push_back(node->positive);
+    if(indexPos.row != -1) {
+        Matrix positive = node->reducedMatrix;
+        // Выбранный маршрут будет использоваться, убираем его из матрицы
+        positive.removeRow(indexPos.row);
+        positive.removeColumn(indexPos.column);
+        node->positive = new SolveTreeItem(positive, node->H);
+        std::cout << std::endl << "Positive: " << std::endl;
+        positive.print();
+        reduce(node->positive);
+        std::cout << std::endl << "H: " << node->positive->H;
+        _items.push_back(node->positive);
+    }
+    if(indexNeg.row != -1) {
+        Matrix negative = node->reducedMatrix;
+        // Выбранный маршрут не будет использоваться - ставим ему завышенную оценку
+        negative.setData(indexNeg.row, indexNeg.column, std::numeric_limits<int>::max());
+        node->negative = new SolveTreeItem(negative, node->H + indexNeg.cost);
+        std::cout << std::endl << "Negative: " << std::endl;
+        negative.print();
+        reduce(node->negative);
+        std::cout << std::endl << "H: " << node->negative->H;
+        _items.push_back(node->negative);
+    }
     return true;
 }
 
