@@ -29,6 +29,7 @@ struct SolveTreeItem {
     std::vector<int> rowMinCost; // Минимальные стоимости по столбцам
     std::vector<int> columnMinCost; // Минимальные стоимости по колонкам
     int H = -1;  // оценка решения
+    bool finished = false;  // Показывает, что задача в данной ветке решена
 };
 
 /**
@@ -54,6 +55,7 @@ private:
 private:
     SolveTreeItem* _head;
     std::vector<SolveTreeItem*> _items;
+    SolveTreeItem* _finalItem = nullptr;
 };
 
 

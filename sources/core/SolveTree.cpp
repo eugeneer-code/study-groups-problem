@@ -23,26 +23,19 @@ void SolveTree::reduce(SolveTreeItem* item)
 bool SolveTree::nextStep()
 {
     static int step = 0;
-    std::cout << std::endl << "---------------------------" << step++ << std::endl;
-    if(step >= 30) return false;
     // находим узел для ветвления с минимальной локальной нижней границей
     auto node = findNextNode();
     if(!node) return false;
-    if(node->initMatrix.rows() == 1) return false;
     // определяем оптимальный индекс для фиксации
     auto indexPos = findNextIndex(node, true);
     auto indexNeg = findNextIndex(node, false);
-    std::cout << "IndexPos [" << indexPos.row << ", " << indexPos.column << "],   IndeexNeg [" << indexNeg.row << ", " << indexNeg.column << "]" << std::endl;
     if(indexPos.row != -1) {
         Matrix positive = node->reducedMatrix;
         // Выбранный маршрут будет использоваться, убираем его из матрицы
         positive.removeRow(indexPos.row);
         positive.removeColumn(indexPos.column);
         node->positive = new SolveTreeItem(positive, node->H);
-        std::cout << std::endl << "Positive: " << std::endl;
-        positive.print();
         reduce(node->positive);
-        std::cout << std::endl << "H: " << node->positive->H;
         _items.push_back(node->positive);
     }
     if(indexNeg.row != -1) {
@@ -50,11 +43,26 @@ bool SolveTree::nextStep()
         // Выбранный маршрут не будет использоваться - ставим ему завышенную оценку
         negative.setData(indexNeg.row, indexNeg.column, std::numeric_limits<int>::max());
         node->negative = new SolveTreeItem(negative, node->H + indexNeg.cost);
-        std::cout << std::endl << "Negative: " << std::endl;
-        negative.print();
         reduce(node->negative);
-        std::cout << std::endl << "H: " << node->negative->H;
         _items.push_back(node->negative);
+    }
+    // По негативной ветке задача решена, т.к. нет больше возможных вариантов ветвления
+    if(indexNeg.row == -1){
+        node->negative = new SolveTreeItem(node->reducedMatrix, node->H);
+        node->negative->finished = true;
+        _items.push_back(node->negative);
+        // Проверяем наличие более удачных решений
+        auto nextNode = findNextNode();
+        // Более удачных ветвлений нет - задача решена
+        if(nextNode && nextNode->H >= node->negative->H) return false;
+    }
+    // По позитивной ветке дошли до матрицы 1х1, задача решена
+    if(node->positive && node->positive->initMatrix.rows() == 1){
+        node->positive->finished = true;
+        // Проверяем наличие более удачных решений
+        auto nextNode = findNextNode();
+        // Более удачных ветвлений нет - задача решена
+        if(nextNode && nextNode->H >= node->negative->H) return false;
     }
     return true;
 }
@@ -62,14 +70,17 @@ bool SolveTree::nextStep()
 bool SolveTree::solve()
 {
     while(nextStep());
+    _finalItem = nullptr;
+    int finalCost = std::numeric_limits<int>::max();
     for(auto item : _items){
-        //std::cout << item->H << item->initMatrix.rows() << std::endl;
-        if(item->initMatrix.rows() == 1) {
-            //std::cout << "H: " << item->H;
-            return true;
+        if(item->finished) {
+            if(item->H < finalCost) {
+                finalCost = item->H;
+                _finalItem = item;
+            }
         }
     }
-    return false;
+    return _finalItem != nullptr;
 }
 
 /**
