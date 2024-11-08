@@ -14,3 +14,12 @@ https://galyautdinov.ru/post/zadacha-kommivoyazhera
 http://old.math.nsc.ru/LBRT/k4/or/or_part4.pdf
 
 http://sa.technolog.edu.ru/repository/saoipr_transport.pdf
+
+
+Сборка проекта
+--------------
+
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./install ..
+cmake --build . --config Release --target install
