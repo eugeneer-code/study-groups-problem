@@ -1,6 +1,8 @@
 #include "microtest.h"
 #include "SolveTree.h"
 #include "Matrix.h"
+#include <random>
+#include <chrono>
 
 TEST(linkLibrary)
 {
@@ -80,7 +82,59 @@ TEST(solving)
     SolveTree s(m);
     bool res = s.solve();
     ASSERT_TRUE(res);
+
+    Matrix m2({
+        {6, 6, 6, 6, 6},
+        {6, 6, 6, 6, 6},
+        {6, 6, 6, 6, 6},
+        {6, 6, 6, 6, 6},
+        {6, 6, 6, 6, 6}
+    });
+    SolveTree s2(m2);
+    bool res2 = s2.solve();
+    ASSERT_TRUE(res2);
 }
 
+TEST(randomMatrix)
+{
+    // init random
+    std::random_device rd;
+    std::mt19937::result_type seed = rd() ^ (
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+                ).count() +
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+                ).count() );
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<unsigned> indexDistrib(4, 12);
+    std::uniform_int_distribution<unsigned> numDistrib(5, 30);
+
+    // generate matrix
+    int size = indexDistrib(gen);
+    Matrix<int> m(size, size);
+    for(int row=0; row<m.rows(); row++){
+        for(int col=0; col<m.columns(); col++){
+            m.setData(row, col, numDistrib(gen));
+        }
+    }
+    SolveTree s(m);
+    bool res = s.solve();
+    ASSERT_TRUE(res);
+    auto S = s.solution();
+    // Проверка, что распределение 1 единственное в стоке и столбце
+    for(int i=0; i<S.rows(); i++){
+        int sum = 0;
+        for(int j=0; j<S.columns(); j++) sum += S.get(i, j);
+        ASSERT_EQ(sum, 1);
+    }
+    for(int j=0; j<S.columns(); j++){
+        int sum = 0;
+        for(int i=0; i<S.rows(); i++) sum += S.get(i, j);
+        ASSERT_EQ(sum, 1);
+    }
+}
 
 TEST_MAIN();

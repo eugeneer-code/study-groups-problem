@@ -43,6 +43,15 @@ public:
         freeMemory();
     }
 
+    // Заполнение всех ячеек значением data
+    void fill(T data) {
+        for(int row=0; row<_rows; row++){
+            for(int col=0; col<_columns; col++){
+                _data[row][col] = data;
+            }
+        }
+    }
+
     // Оператор присваивания
     Matrix& operator=(const Matrix& other){
         allocateMemory(other._rows, other._columns);
@@ -130,6 +139,7 @@ private:
         freeMemory();
         _rows = rows;
         _columns = cols;
+        if(_rows == -1 || _columns == -1) return;
         _data = new T*[_rows];
         for(int i=0; i<_rows; i++){
             _data[i] = new T[_columns];

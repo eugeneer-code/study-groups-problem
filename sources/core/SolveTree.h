@@ -23,13 +23,13 @@ struct SolveTreeItem {
     SolveTreeItem* positive = nullptr; // Узел с выбором определённого индекса
     SolveTreeItem* negative = nullptr; // Узел, где индекс не выбран
 
-    IndexResult selectedIndex;  // Выбранный индекс для дальнейшего решения
-    Matrix<int> initMatrix = {};  // Первоначальная матрица узла (задаётся при создании узла)
-    Matrix<int> reducedMatrix = {}; // Приведённая матрица
-    std::vector<int> rowMinCost; // Минимальные стоимости по столбцам
-    std::vector<int> columnMinCost; // Минимальные стоимости по колонкам
-    int H = -1;  // оценка решения
-    bool finished = false;  // Показывает, что задача в данной ветке решена
+    IndexResult selectedIndex = {};    // Выбранный индекс для дальнейшего решения
+    Matrix<int> initMatrix = {};       // Первоначальная матрица узла (задаётся при создании узла)
+    Matrix<int> reducedMatrix = {};    // Приведённая матрица
+    std::vector<int> rowMinCost;       // Минимальные стоимости по столбцам
+    std::vector<int> columnMinCost;    // Минимальные стоимости по колонкам
+    int H = -1;                        // оценка решения
+    bool finished = false;             // Показывает, что задача в данной ветке решена
 };
 
 /**
@@ -41,6 +41,7 @@ public:
     SolveTree(Matrix<int> m);
     bool nextStep();
     bool solve();
+    Matrix<int> solution();
 
 private:
     SolveTreeItem* findNextNode();
@@ -51,11 +52,13 @@ private:
     void reductColumns(IntMatrix& m, const std::vector<int>& array) const;
     int costLimit(const std::vector<int>& rows, const std::vector<int>& cols) const;
     IndexResult findNextIndex(SolveTreeItem* item, bool positive);
+    void findSolution();
 
 private:
     SolveTreeItem* _head;
     std::vector<SolveTreeItem*> _items;
     SolveTreeItem* _finalItem = nullptr;
+    Matrix<int> _solution = {};
 };
 
 

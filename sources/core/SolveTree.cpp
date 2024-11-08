@@ -6,8 +6,16 @@
 SolveTree::SolveTree(Matrix<int> m)
 {
     _head = new SolveTreeItem(m);
+    _head->prev = nullptr;
     reduce(_head);
     _items.push_back(_head);
+    _solution = Matrix<int>(m.rows(), m.columns());
+    _solution.fill(0);
+}
+
+Matrix<int> SolveTree::solution()
+{
+    return _solution;
 }
 
 void SolveTree::reduce(SolveTreeItem* item)
@@ -26,6 +34,8 @@ bool SolveTree::nextStep()
     // находим узел для ветвления с минимальной локальной нижней границей
     auto node = findNextNode();
     if(!node) return false;
+    // Следующим обнаружен конечный узел, значит это оптимальное решение, задача решена
+    if(node->finished) return false;
     // определяем оптимальный индекс для фиксации
     auto indexPos = findNextIndex(node, true);
     auto indexNeg = findNextIndex(node, false);
@@ -35,6 +45,8 @@ bool SolveTree::nextStep()
         positive.removeRow(indexPos.row);
         positive.removeColumn(indexPos.column);
         node->positive = new SolveTreeItem(positive, node->H);
+        node->positive->prev = node;
+        node->positive->selectedIndex = indexPos;
         reduce(node->positive);
         _items.push_back(node->positive);
     }
@@ -42,7 +54,10 @@ bool SolveTree::nextStep()
         Matrix negative = node->reducedMatrix;
         // Выбранный маршрут не будет использоваться - ставим ему завышенную оценку
         negative.setData(indexNeg.row, indexNeg.column, std::numeric_limits<int>::max());
+        // К итоговой оценки для следующего узла добавляется штраф за неиспользование данного решения
         node->negative = new SolveTreeItem(negative, node->H + indexNeg.cost);
+        node->negative->prev = node;
+        node->negative->selectedIndex = indexNeg;
         reduce(node->negative);
         _items.push_back(node->negative);
     }
@@ -50,19 +65,13 @@ bool SolveTree::nextStep()
     if(indexNeg.row == -1){
         node->negative = new SolveTreeItem(node->reducedMatrix, node->H);
         node->negative->finished = true;
+        node->negative->prev = node;
+        node->negative->selectedIndex = indexNeg;
         _items.push_back(node->negative);
-        // Проверяем наличие более удачных решений
-        auto nextNode = findNextNode();
-        // Более удачных ветвлений нет - задача решена
-        if(nextNode && nextNode->H >= node->negative->H) return false;
     }
     // По позитивной ветке дошли до матрицы 1х1, задача решена
     if(node->positive && node->positive->initMatrix.rows() == 1){
         node->positive->finished = true;
-        // Проверяем наличие более удачных решений
-        auto nextNode = findNextNode();
-        // Более удачных ветвлений нет - задача решена
-        if(nextNode && nextNode->H >= node->negative->H) return false;
     }
     return true;
 }
@@ -80,6 +89,7 @@ bool SolveTree::solve()
             }
         }
     }
+    if(_finalItem) findSolution();
     return _finalItem != nullptr;
 }
 
@@ -226,4 +236,49 @@ IndexResult SolveTree::findNextIndex(SolveTreeItem* item, bool positive)
     auto maxItemIt = std::max_element(zeroCost.begin(), zeroCost.end(), [](const auto& lhs, const auto& rhs){ return lhs.cost > rhs.cost;});
     if(maxItemIt == zeroCost.end()) return {-1, -1};
     return *maxItemIt;
+}
+
+void SolveTree::findSolution()
+{
+    if(!_finalItem) return;
+    auto ptr = _finalItem;
+    std::list<IndexResult> indexList;
+
+    if(_finalItem->selectedIndex.positive){
+        // Если конечный элемент - позитивная ветвь, то матрица состоит из одной ячейки - добавим индекс [0,0]
+        indexList.push_back({0,0});
+    }
+    else {
+        // Если конечный элемент - негативная ветвь, добавим все ячейки матрицы, где есть конечное решение (не М)
+        // Их должно быть по одной в каждой строке и стобце
+        auto m = ptr->initMatrix;
+        for(int i=0; i<m.rows(); i++){
+            for(int j=0; j<m.columns(); j++){
+                if(m.get(i,j) != std::numeric_limits<int>::max()){
+                    indexList.push_back({i, j});
+                }
+            }
+        }
+    }
+    ptr = ptr->prev;
+
+    // Проходим всё дерево от ветви с решением до корня _head
+    while(ptr) {
+        if(ptr->selectedIndex.positive){
+            // Расширяем матрицу только на положительные ветвях - где убирались столбцы и строки
+            auto currIndex = ptr->positive->selectedIndex;
+            for(auto& index : indexList){
+                if(index.row >= currIndex.row) index.row++;
+                if(index.column >= currIndex.column) index.column++;
+            }
+            indexList.push_back(currIndex);
+        }
+        ptr = ptr->prev;
+    }
+
+    // Составляем матрицу решения
+    _solution.fill(0);
+    for(auto& index : indexList){
+        _solution.setData(index.row, index.column, 1);
+    }
 }
