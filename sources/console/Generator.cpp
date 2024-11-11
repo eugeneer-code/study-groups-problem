@@ -26,7 +26,7 @@ int Generator::generateMark() {
     else return 5; // вероятность получения оценки 5: 30%
 }
 
-// Важность направления
+// Важность направления, задаётся в диапазоне [0.5; 2]
 float Generator::generateImportance() {
     float num = _distImport(_gen);
     return num/10;

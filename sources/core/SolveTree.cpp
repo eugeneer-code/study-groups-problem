@@ -18,6 +18,11 @@ Matrix<int> SolveTree::solution()
     return _solution;
 }
 
+SolveTreeItem* SolveTree::solutionItem()
+{
+    return _finalItem;
+}
+
 void SolveTree::reduce(SolveTreeItem* item)
 {
     item->reducedMatrix = item->initMatrix;
@@ -233,7 +238,7 @@ IndexResult SolveTree::findNextIndex(SolveTreeItem* item, bool positive)
         }
     }
     // Среди нулевых выбираем индекс с наибольшей оценкой
-    auto maxItemIt = std::max_element(zeroCost.begin(), zeroCost.end(), [](const auto& lhs, const auto& rhs){ return lhs.cost > rhs.cost;});
+    auto maxItemIt = std::max_element(zeroCost.begin(), zeroCost.end(), [](const auto& lhs, const auto& rhs){ return lhs.cost < rhs.cost;});
     if(maxItemIt == zeroCost.end()) return {-1, -1};
     return *maxItemIt;
 }

@@ -42,6 +42,7 @@ public:
     bool nextStep();
     bool solve();
     Matrix<int> solution();
+    SolveTreeItem* solutionItem();
 
 private:
     SolveTreeItem* findNextNode();
@@ -62,4 +63,4 @@ private:
 };
 
 
-#endif //STUDY_GROUPS_PROBLEM_SOLVETREE_H
+#endif //SOLVETREE_H

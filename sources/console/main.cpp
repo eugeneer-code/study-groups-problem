@@ -18,7 +18,7 @@ int main()
     }
     // Количество обучающихся по направлениям
     std::vector<int> disciplinesList;
-    cout << "Number of people on disciplines: ";
+    cout << endl << "Number of people on disciplines: ";
     for(int i=0; i<M; i++){
         int cnt = N/M;
         if(i < N%M) cnt++;
@@ -28,7 +28,7 @@ int main()
     cout << endl;
 
     // Важность направлений
-    cout << "Importance of disciplines: ";
+    cout << endl << "Importance of disciplines: ";
     std::vector<float> importance;
     for(int i=0; i<M; i++){
         auto imp = gen.generateImportance();
@@ -38,20 +38,20 @@ int main()
     cout << endl;
 
     // Оценки людей по направлениям
-    Matrix<int> marks(N, M);
-    cout << "Marks: " << endl;
-    for(int row=0; row<marks.rows(); row++){
-        for(int col=0; col<marks.columns(); col++){
-            marks.setData(row, col, gen.generateMark());
+    Matrix<int> grades(N, M);
+    cout << endl << "Grades: " << endl;
+    for(int row=0; row<grades.rows(); row++){
+        for(int col=0; col<grades.columns(); col++){
+            grades.setData(row, col, gen.generateMark());
         }
     }
-    marks.print();
+    grades.print();
 
     /**
      * Получение индекса направления по индексу человека
      * M = 3, N = 10
      * index 0 1 2 3 4 5 6 7 8 9
-     * res   0 0 0 0 1 1 1 3 3 3
+     * res   0 0 0 0 1 1 1 2 2 2
      */
     auto getDiscByIndex = [N, M](int index){
         return index * M / N;
@@ -63,18 +63,36 @@ int main()
         for(int col=0; col<N; col++){
             int discIndex = getDiscByIndex(col);
             int imp = importance.at(discIndex) * 10;
-            int init = imp * (5 - marks.get(row, discIndex));
+            // Необходимо минимизировать отставание (5 - оценка)
+            int init = imp * (5 - grades.get(row, discIndex));
             initMatrix.setData(row, col, init);
         }
     }
-    cout << "Cost matrix for minimization: " << endl;
+    cout << endl << "Cost matrix for minimization: " << endl;
     initMatrix.print();
 
+    // Минимизация
     SolveTree solve(initMatrix);
     solve.solve();
-    auto res = solve.solution();
-    cout << "Solution: " << endl;
+    auto solution = solve.solution();
+
+
+    // Распределение по предметам
+    Matrix<int> res(N, M);
+    res.fill(0);
+    for(int row=0; row<N; row++) {
+        for(int col=0; col<N; col++) {
+            int s = solution.get(row, col);
+            if(s == 0) continue;
+            int discIndex = getDiscByIndex(col);
+            res.setData(row, discIndex, s);
+        }
+    }
+    cout << endl << "Solution: " << endl;
     res.print();
+
+    cout << endl << "Total grades loss: " << solve.solutionItem()->H;
+    cout << endl << "Grades loss per human: " << solve.solutionItem()->H*1.0/N;
 
     return 0;
 }
