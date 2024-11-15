@@ -4,6 +4,7 @@ Core::Core(QObject* parent)
     : QObject(parent)
     , _importance(new ImportanceModel(this))
     , _grades(new GradesModel(this))
+    , _groups(new GroupsModel(this))
 {
 }
 
@@ -15,4 +16,9 @@ ImportanceModel* Core::importanceModel()
 GradesModel* Core::gradesModel()
 {
     return _grades;
+}
+
+GroupsModel* Core::groupsModel()
+{
+    return _groups;
 }

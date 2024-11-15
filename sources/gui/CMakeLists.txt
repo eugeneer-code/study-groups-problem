@@ -12,6 +12,8 @@ add_executable(${TARGET_NAME}
     ImportanceModel.cpp
     GradesModel.h
     GradesModel.cpp
+    GroupsModel.h
+    GroupsModel.cpp
     res.qrc
 )
 

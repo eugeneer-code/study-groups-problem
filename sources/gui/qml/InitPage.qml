@@ -18,7 +18,10 @@ Item {
             SpinBox {
                 from: 1
                 to: 100
-                onValueChanged: core.gradesModel.setPeopleCount(value)
+                onValueChanged: {
+                    core.gradesModel.setPeopleCount(value)
+                    core.groupsModel.setPeopleCount(value)
+                }
             }
             Label {text: "Количество направлений:"}
             SpinBox {
@@ -27,8 +30,15 @@ Item {
                 onValueChanged: {
                     core.importanceModel.setCount(value)
                     core.gradesModel.setDisciplinesCount(value)
+                    core.groupsModel.setDisciplinesCount(value)
                 }
             }
+        }
+
+        Label {text: "Размер групп:"}
+        GroupsView {
+            Layout.preferredHeight: 30
+            Layout.fillWidth: true
         }
 
         Label {text: "Важность направлений:"}

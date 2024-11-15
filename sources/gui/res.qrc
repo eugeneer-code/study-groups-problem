@@ -6,5 +6,6 @@
         <file>qml/CheckPage.qml</file>
         <file>qml/GradesView.qml</file>
         <file>qml/ImportanceView.qml</file>
+        <file>qml/GroupsView.qml</file>
     </qresource>
 </RCC>
