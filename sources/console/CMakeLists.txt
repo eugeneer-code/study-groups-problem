@@ -8,4 +8,4 @@ add_executable(${TARGET_NAME}
 
 target_link_libraries(${TARGET_NAME} PRIVATE core)
 
-install(FILES ${TARGET_NAME} DESTINATION .)
+install(TARGETS ${TARGET_NAME} DESTINATION .)
