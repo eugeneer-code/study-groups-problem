@@ -23,6 +23,11 @@ SolveTreeItem* SolveTree::solutionItem()
     return _finalItem;
 }
 
+/**
+ * Редукция матрицы initMatrix в указанном узле item
+ * В результате записываются оценки по строкам rowMinCost, по стобцам columnMinCost и редуцированная матрица reducedMatrix
+ * Также вычисляется локальная нижняя граница H
+ */
 void SolveTree::reduce(SolveTreeItem* item)
 {
     item->reducedMatrix = item->initMatrix;
@@ -119,7 +124,7 @@ SolveTreeItem* SolveTree::findNextNode()
 /**
  * Нахождение минимума в каждой строке - константы приведения для строк
  */
-std::vector<int> SolveTree::rowMin(const IntMatrix& m) const
+std::vector<int> SolveTree::rowMin(const Matrix<int>& m) const
 {
     std::vector<int> minVector;
     for(int row=0; row<m.rows(); row++){
@@ -139,7 +144,7 @@ std::vector<int> SolveTree::rowMin(const IntMatrix& m) const
 /**
  * Нахождение минимумов по столбцам
  */
-std::vector<int> SolveTree::columnMin(const IntMatrix& m) const
+std::vector<int> SolveTree::columnMin(const Matrix<int>& m) const
 {
     std::vector<int> minVector;
     for(int col=0; col<m.columns(); col++){
@@ -159,7 +164,7 @@ std::vector<int> SolveTree::columnMin(const IntMatrix& m) const
 /**
  * Редукция строк. Из каждого элемента в каждой строке вычитаем соответствующее ей значение минимума
  */
-void SolveTree::reductRows(IntMatrix& m, const std::vector<int>& array) const
+void SolveTree::reductRows(Matrix<int>& m, const std::vector<int>& array) const
 {
     if(m.rows() != array.size()) return;
     for(int row=0; row<m.rows(); row++){
@@ -175,7 +180,7 @@ void SolveTree::reductRows(IntMatrix& m, const std::vector<int>& array) const
 /**
  * Редукция столбцов. Из каждого элемента каждого столбца вычитаем соответствующее ему значение минимума
  */
-void SolveTree::reductColumns(IntMatrix& m, const std::vector<int>& array) const
+void SolveTree::reductColumns(Matrix<int>& m, const std::vector<int>& array) const
 {
     if(m.columns() != array.size()) return;
     for(int row=0; row<m.rows(); row++){
@@ -243,6 +248,9 @@ IndexResult SolveTree::findNextIndex(SolveTreeItem* item, bool positive)
     return *maxItemIt;
 }
 
+/**
+ * Вычисление матрицы решений на основе ветвления дерева решений
+ */
 void SolveTree::findSolution()
 {
     if(!_finalItem) return;

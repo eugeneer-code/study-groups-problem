@@ -7,10 +7,10 @@
  * Индекс элемента в матрице решений
  */
 struct IndexResult {
-    int row = -1;
-    int column = -1;
-    int cost = 0;
-    bool positive = true;
+    int row = -1;            // строка
+    int column = -1;         // колонка
+    int cost = 0;            // штраф, вычисленный для данного индекса
+    bool positive = true;    // показывает для какой ветки вычисляется индекс - положительной или отрицительной
 };
 
 /**
@@ -36,7 +36,6 @@ struct SolveTreeItem {
  * Дерево решений
  */
 class SolveTree {
-    typedef Matrix<int> IntMatrix;
 public:
     SolveTree(Matrix<int> m);
     bool nextStep();
@@ -47,10 +46,10 @@ public:
 private:
     SolveTreeItem* findNextNode();
     void reduce(SolveTreeItem* item);
-    std::vector<int> rowMin(const IntMatrix& m) const;
-    std::vector<int> columnMin(const IntMatrix& m) const;
-    void reductRows(IntMatrix& m, const std::vector<int>& array) const;
-    void reductColumns(IntMatrix& m, const std::vector<int>& array) const;
+    std::vector<int> rowMin(const Matrix<int>& m) const;
+    std::vector<int> columnMin(const Matrix<int>& m) const;
+    void reductRows(Matrix<int>& m, const std::vector<int>& array) const;
+    void reductColumns(Matrix<int>& m, const std::vector<int>& array) const;
     int costLimit(const std::vector<int>& rows, const std::vector<int>& cols) const;
     IndexResult findNextIndex(SolveTreeItem* item, bool positive);
     void findSolution();

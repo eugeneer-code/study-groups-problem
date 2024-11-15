@@ -80,19 +80,21 @@ int main()
     // Распределение по предметам
     Matrix<int> res(N, M);
     res.fill(0);
+    int totalGrades = 0;
     for(int row=0; row<N; row++) {
         for(int col=0; col<N; col++) {
             int s = solution.get(row, col);
             if(s == 0) continue;
             int discIndex = getDiscByIndex(col);
             res.setData(row, discIndex, s);
+            totalGrades += grades.get(row, discIndex);
         }
     }
     cout << endl << "Solution: " << endl;
     res.print();
 
-    cout << endl << "Total grades loss: " << solve.solutionItem()->H;
-    cout << endl << "Grades loss per human: " << solve.solutionItem()->H*1.0/N;
+    cout << endl << "Total grades loss: " << 5*N - totalGrades;
+    cout << endl << "Grades loss per human: " << 5.0 - totalGrades*1.0/N << endl;
 
     return 0;
 }
