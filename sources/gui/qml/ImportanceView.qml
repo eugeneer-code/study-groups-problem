@@ -4,6 +4,7 @@ import QtQuick.Layouts
 
 TableView {
     model: core.importanceModel
+    boundsBehavior: Flickable.StopAtBounds
     delegate: Rectangle {
         implicitWidth: 70
         implicitHeight: 30

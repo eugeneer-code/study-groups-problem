@@ -5,6 +5,7 @@ import Qt.labs.qmlmodels
 
 TableView {
     model: core.gradesModel
+    boundsBehavior: Flickable.StopAtBounds
     delegate: Rectangle {
         implicitWidth: 70
         implicitHeight: 30

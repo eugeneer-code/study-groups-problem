@@ -76,13 +76,13 @@ public:
 
     // Количество строк
     int rows() const {
-        if(_data == nullptr) return -1;
+        if(_data == nullptr) return 0;
         return _rows;
     }
 
     // Количество колонок
     int columns() const {
-        if(_data == nullptr) return -1;
+        if(_data == nullptr) return 0;
         return _columns;
     }
 
@@ -139,7 +139,7 @@ private:
         freeMemory();
         _rows = rows;
         _columns = cols;
-        if(_rows == -1 || _columns == -1) return;
+        if(_rows == 0 || _columns == 0) return;
         _data = new T*[_rows];
         for(int i=0; i<_rows; i++){
             _data[i] = new T[_columns];

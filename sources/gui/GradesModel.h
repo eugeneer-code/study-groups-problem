@@ -18,7 +18,13 @@ protected:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 private:
+    int generateGrade();
+    void resizeMatrix(int newRow, int newCol);
+
+private:
     Matrix<int> _grades;
+    int _disciplines = 0;
+    int _people = 0;
 };
 
 
