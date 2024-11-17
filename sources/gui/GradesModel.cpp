@@ -4,6 +4,7 @@
 GradesModel::GradesModel(QObject* parent)
     : QAbstractTableModel(parent)
     , _grades({})
+    , _solution({})
 {
 }
 
@@ -56,7 +57,11 @@ QVariant GradesModel::data(const QModelIndex &index, int role) const
     if(!index.isValid()) return QVariant();
     if(index.column() >= _grades.columns()) return QVariant();
     if(index.row() >= _grades.rows()) return QVariant();
-    return _grades.get(index.row(), index.column());
+    switch(role){
+        case Grade: return _grades.get(index.row(), index.column());
+        case Selected: return _solution.get(index.row(), index.column()) == 1;
+        default: return QVariant();
+    }
 }
 
 bool GradesModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -64,17 +69,29 @@ bool GradesModel::setData(const QModelIndex &index, const QVariant &value, int r
     if(!index.isValid()) return false;
     if(index.column() >= _grades.columns()) return false;
     if(index.row() >= _grades.rows()) return false;
+    if(role != Grade) return false;
     float num = value.toInt();
     if(num < 1) num = 1;
     if(num > 5) num = 5;
     _grades.setData(index.row(), index.column(), num);
     emit dataChanged(index, index);
+    return true;
 }
 
 Qt::ItemFlags GradesModel::flags(const QModelIndex &index) const
 {
     Q_UNUSED(index)
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+}
+
+QHash<int, QByteArray> GradesModel::roleNames() const
+{
+    auto roles = QAbstractItemModel::roleNames();
+    roles.insert({
+                         {Grade, "_grade"},
+                         {Selected, "_selected"}
+                 });
+    return roles;
 }
 
 int GradesModel::generateGrade()
@@ -98,4 +115,17 @@ void GradesModel::resizeMatrix(int newRow, int newCol)
         }
     }
     _grades = m;
+}
+
+int GradesModel::getGrade(int human, int discipline) const
+{
+    if(human < 0 || human >= _people) return 0;
+    if(discipline < 0 || discipline >= _disciplines) return 0;
+    return _grades.get(human, discipline);
+}
+
+void GradesModel::showSolution(Matrix<int> solution)
+{
+    _solution = solution;
+    emit dataChanged(index(0,0), index(_people-1, _disciplines-1), {Selected});
 }

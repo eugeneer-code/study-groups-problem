@@ -68,4 +68,15 @@ Item {
             Layout.fillHeight: true
         }
     }
+
+    Button {
+        anchors {
+            top: parent.top
+            right: parent.right
+            margins: 20
+        }
+        text: "Рассчитать"
+        enabled: core.groupsModel.freePlaces == 0
+        onClicked: core.solve()
+    }
 }

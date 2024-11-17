@@ -11,21 +11,22 @@ TableView {
         implicitHeight: 30
         border.width: 1
         border.color: palette.alternateBase
+        color: _selected ? palette.highlight : "transparent"
 
         Text {
             anchors.centerIn: parent
-            text: display
+            text: _grade
         }
 
         TableView.editDelegate: TextField {
             anchors.fill: parent
-            text: display
+            text: _grade
             horizontalAlignment: TextInput.AlignHCenter
             verticalAlignment: TextInput.AlignVCenter
             Component.onCompleted: selectAll()
 
             TableView.onCommit: {
-                display = text
+                _grade = text
             }
         }
     }

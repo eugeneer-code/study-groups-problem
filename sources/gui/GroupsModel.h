@@ -13,6 +13,10 @@ public:
     Q_INVOKABLE void setDisciplinesCount(int count);
     Q_INVOKABLE void setPeopleCount(int count);
     int freePlaces() const;
+    /**
+     * Получение индекса направления по индексу человека
+     */
+    int getDisciplineIndex(int index);
 
     enum Roles {
         GroupSize = Qt::UserRole + 1,

@@ -7,6 +7,7 @@ class ImportanceModel : public QAbstractTableModel {
 public:
     ImportanceModel(QObject* parent = nullptr);
     Q_INVOKABLE void setCount(int count);
+    float getImportance(int index) const;
 
 protected:
     int rowCount(const QModelIndex& = QModelIndex()) const override;

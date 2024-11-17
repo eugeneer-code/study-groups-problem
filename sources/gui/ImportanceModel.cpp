@@ -54,3 +54,9 @@ Qt::ItemFlags ImportanceModel::flags(const QModelIndex &index) const
     Q_UNUSED(index)
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
+
+float ImportanceModel::getImportance(int index) const
+{
+    if(index < 0 || index >= _data.size()) return 1;
+    return _data.at(index);
+}

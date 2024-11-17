@@ -92,3 +92,14 @@ void GroupsModel::updateFreePlaces()
         emit freePlacesChanged();
     }
 }
+
+int GroupsModel::getDisciplineIndex(int index)
+{
+    if(index >= _people) return -1;
+    int currCount = 0;
+    for(int i=0; i<_data.size(); i++){
+        currCount += _data.at(i);
+        if(index < currCount) return i;
+    }
+    return -1;
+}
