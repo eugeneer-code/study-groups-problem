@@ -7,5 +7,6 @@
         <file>qml/GradesView.qml</file>
         <file>qml/ImportanceView.qml</file>
         <file>qml/GroupsView.qml</file>
+        <file>qml/AccentBadge.qml</file>
     </qresource>
 </RCC>

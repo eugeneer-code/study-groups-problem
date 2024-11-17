@@ -5,6 +5,11 @@ GroupsModel::GroupsModel(QObject* parent)
 {
 }
 
+int GroupsModel::freePlaces() const
+{
+    return _freePlaces;
+}
+
 void GroupsModel::setDisciplinesCount(int count)
 {
     if(count < 0) return;
@@ -19,11 +24,13 @@ void GroupsModel::setDisciplinesCount(int count)
         endInsertColumns();
     }
     _disciplines = count;
+    updateFreePlaces();
 }
 
 void GroupsModel::setPeopleCount(int count)
 {
     _people = count;
+    updateFreePlaces();
 }
 
 int GroupsModel::rowCount(const QModelIndex& index) const
@@ -42,7 +49,7 @@ QVariant GroupsModel::data(const QModelIndex &index, int role) const
     if(index.column() >= _data.count()) return QVariant();
     switch(role){
         case GroupSize: return _data.at(index.column());
-        case MaxSize: return 3;//_data.at(index.column() + 1);
+        case MaxSize: return _data.at(index.column()) + _freePlaces;
         default: return QVariant();
     }
 }
@@ -55,6 +62,7 @@ bool GroupsModel::setData(const QModelIndex &index, const QVariant &value, int r
     float num = value.toInt();
     _data[index.column()] = num;
     emit dataChanged(index, index);
+    updateFreePlaces();
     return true;
 }
 
@@ -72,4 +80,15 @@ QHash<int, QByteArray> GroupsModel::roleNames() const
         {MaxSize, "_maxSize"}
     });
     return roles;
+}
+
+void GroupsModel::updateFreePlaces()
+{
+    int free = _people;
+    for(auto& it : _data) free -= it;
+    if(free != _freePlaces){
+        _freePlaces = free;
+        emit dataChanged(index(0,0), index(0,_data.size()), {MaxSize});
+        emit freePlacesChanged();
+    }
 }

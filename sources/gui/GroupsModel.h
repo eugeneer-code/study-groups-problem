@@ -4,10 +4,15 @@
 
 class GroupsModel : public QAbstractTableModel {
     Q_OBJECT
+    Q_PROPERTY(int freePlaces READ freePlaces NOTIFY freePlacesChanged)
+signals:
+    void freePlacesChanged();
+
 public:
     GroupsModel(QObject* parent = nullptr);
     Q_INVOKABLE void setDisciplinesCount(int count);
     Q_INVOKABLE void setPeopleCount(int count);
+    int freePlaces() const;
 
     enum Roles {
         GroupSize = Qt::UserRole + 1,
@@ -23,9 +28,13 @@ protected:
     QHash<int, QByteArray> roleNames() const override;
 
 private:
+    void updateFreePlaces();
+
+private:
     QList<int> _data;
-    int _disciplines;
-    int _people;
+    int _disciplines = 1;
+    int _people = 1;
+    int _freePlaces = 0;
 };
 
 

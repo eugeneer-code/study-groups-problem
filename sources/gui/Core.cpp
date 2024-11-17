@@ -8,6 +8,31 @@ Core::Core(QObject* parent)
 {
 }
 
+int Core::peopleCount() const
+{
+    return _peopleCount;
+}
+
+void Core::setPeopleCount(int count)
+{
+    if(count <= 0) return;
+    _peopleCount = count;
+    emit dataChanged();
+}
+
+int Core::disciplinesCount() const
+{
+    return _disciplinesCount;
+}
+
+void Core::setDisciplinesCount(int count)
+{
+    if(count >= 0) return;
+    if(count > _peopleCount) return;
+    _disciplinesCount = count;
+    emit dataChanged();
+}
+
 ImportanceModel* Core::importanceModel()
 {
     return _importance;
