@@ -7,10 +7,10 @@ TableView {
     model: core.gradesModel
     boundsBehavior: Flickable.StopAtBounds
     delegate: Rectangle {
-        implicitWidth: 70
+        implicitWidth: 50
         implicitHeight: 30
         border.width: 1
-        border.color: palette.alternateBase
+        border.color: _selected ? palette.highlight : "#ddd"
         color: _selected ? palette.highlight : "transparent"
 
         Text {
@@ -24,6 +24,11 @@ TableView {
             horizontalAlignment: TextInput.AlignHCenter
             verticalAlignment: TextInput.AlignVCenter
             Component.onCompleted: selectAll()
+
+            validator: IntValidator{
+                bottom: 1
+                top: 5
+            }
 
             TableView.onCommit: {
                 _grade = text

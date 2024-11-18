@@ -6,7 +6,7 @@ TableView {
     model: core.groupsModel
     boundsBehavior: Flickable.StopAtBounds
     delegate: Rectangle {
-        implicitWidth: 70
+        implicitWidth: 50
         implicitHeight: 30
         border.width: 1
         border.color: palette.alternateBase
@@ -18,7 +18,7 @@ TableView {
 
         TableView.editDelegate: SpinBox {
             anchors.centerIn: parent
-            width: 150
+            width: 130
             height: 30
             value: _groupSize
             editable: true

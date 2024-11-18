@@ -16,6 +16,8 @@ Item {
             columnSpacing: 20
             Label {text: "Количество претендентов:"}
             SpinBox {
+                Layout.preferredHeight: 30
+                Layout.preferredWidth: 130
                 from: 1
                 to: 100
                 Component.onCompleted: value = core.peopleCount
@@ -27,6 +29,8 @@ Item {
             }
             Label {text: "Количество направлений:"}
             SpinBox {
+                Layout.preferredHeight: 30
+                Layout.preferredWidth: 130
                 from: 1
                 to: core.peopleCount
                 Component.onCompleted: value = core.disciplinesCount
