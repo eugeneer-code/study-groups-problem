@@ -75,6 +75,7 @@ bool GradesModel::setData(const QModelIndex &index, const QVariant &value, int r
     if(num > 5) num = 5;
     _grades.setData(index.row(), index.column(), num);
     emit dataChanged(index, index);
+    emit invalidateSolution();
     return true;
 }
 
@@ -115,6 +116,7 @@ void GradesModel::resizeMatrix(int newRow, int newCol)
         }
     }
     _grades = m;
+    emit invalidateSolution();
 }
 
 int GradesModel::getGrade(int human, int discipline) const
@@ -128,4 +130,21 @@ void GradesModel::showSolution(Matrix<int> solution)
 {
     _solution = solution;
     emit dataChanged(index(0,0), index(_people-1, _disciplines-1), {Selected});
+}
+
+void GradesModel::hideSolution()
+{
+    _solution = {};
+    emit dataChanged(index(0,0), index(_people-1, _disciplines-1), {Selected});
+}
+
+void GradesModel::generate()
+{
+    emit invalidateSolution();
+    for(int row=0; row<_grades.rows(); row++) {
+        for (int col = 0; col < _grades.columns(); col++) {
+            _grades.setData(row, col, generateGrade());
+        }
+    }
+    emit dataChanged(index(0,0), index(_people-1, _disciplines-1), {Grade});
 }

@@ -86,12 +86,30 @@ void GroupsModel::updateFreePlaces()
 {
     int free = _people;
     for(auto& it : _data) free -= it;
+    if(free < 0){
+        fixGroups(free);
+        emit dataChanged(index(0,0), index(0, _data.size()-1), {GroupSize});
+        free = 0;
+    }
     if(free != _freePlaces){
         _freePlaces = free;
-        emit dataChanged(index(0,0), index(0,_data.size()), {MaxSize});
+        emit dataChanged(index(0,0), index(0,_data.size()-1), {MaxSize});
         emit freePlacesChanged();
     }
 }
+
+// Исправление ошибки, когда людей больше, чем направлений (может возникнуть при увеличении числа направлений)
+// places - количество лишних мест
+void GroupsModel::fixGroups(int places)
+{
+    while(places < 0) {
+        auto maxIt = std::max_element(_data.begin(), _data.end());
+        if (maxIt == _data.end()) return;
+        *maxIt = *maxIt - 1;
+        places++;
+    }
+}
+
 
 int GroupsModel::getDisciplineIndex(int index)
 {

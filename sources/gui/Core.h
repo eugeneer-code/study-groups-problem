@@ -13,9 +13,11 @@ class Core : public QObject {
     Q_PROPERTY(ImportanceModel* importanceModel READ importanceModel CONSTANT)
     Q_PROPERTY(GradesModel* gradesModel READ gradesModel CONSTANT)
     Q_PROPERTY(GroupsModel* groupsModel READ groupsModel CONSTANT)
+    Q_PROPERTY(int totalGradesLoss READ totalGradesLoss NOTIFY solutionChanged)
 
 signals:
     void dataChanged();
+    void solutionChanged();
 
 public:
     Core(QObject* parent = nullptr);
@@ -29,7 +31,13 @@ public:
     GradesModel* gradesModel();
     GroupsModel* groupsModel();
 
+    int totalGradesLoss() const;
+
     Q_INVOKABLE void solve();
+    Q_INVOKABLE void regenerate();
+
+private slots:
+    void onInvalidateSolution();
 
 private:
     void prepareInitMatrix();

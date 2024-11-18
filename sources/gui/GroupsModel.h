@@ -33,6 +33,7 @@ protected:
 
 private:
     void updateFreePlaces();
+    void fixGroups(int places);
 
 private:
     QList<int> _data;

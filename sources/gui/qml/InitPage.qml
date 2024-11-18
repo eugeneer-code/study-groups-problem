@@ -69,14 +69,31 @@ Item {
         }
     }
 
-    Button {
+    ColumnLayout {
         anchors {
             top: parent.top
             right: parent.right
             margins: 20
         }
-        text: "Рассчитать"
-        enabled: core.groupsModel.freePlaces == 0
-        onClicked: core.solve()
+        spacing: 16
+        Row {
+            Layout.alignment: Qt.AlignRight
+            spacing: 16
+            Button {
+                Layout.alignment: Qt.AlignRight
+                text: "Случайный набор"
+                onClicked: core.regenerate()
+            }
+            Button {
+                text: "Рассчитать"
+                enabled: core.groupsModel.freePlaces == 0
+                onClicked: core.solve()
+            }
+        }
+        Label {
+            Layout.alignment: Qt.AlignRight
+            visible: core.totalGradesLoss >= 0
+            text: "Общее отставание: <b>" + core.totalGradesLoss + "</b>"
+        }
     }
 }

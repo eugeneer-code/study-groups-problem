@@ -17,6 +17,11 @@ ApplicationWindow {
         property alias height: window.height
     }
 
+    Component.onCompleted: {
+        palette.accent = "#008F75"
+        palette.highlight = "#C9EAE3"
+    }
+
     TabBar {
         id: tabs
         width: parent.width

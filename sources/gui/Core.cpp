@@ -5,7 +5,10 @@ Core::Core(QObject* parent)
     , _importance(new ImportanceModel(this))
     , _grades(new GradesModel(this))
     , _groups(new GroupsModel(this))
+    , _totalGradesLoss(-1)
 {
+    connect(_importance, &ImportanceModel::invalidateSolution, this, &Core::onInvalidateSolution);
+    connect(_grades, &GradesModel::invalidateSolution, this, &Core::onInvalidateSolution);
 }
 
 int Core::peopleCount() const
@@ -62,6 +65,7 @@ void Core::solve()
     // Подготовка итоговой матрицы с решением
     createSolutionMatrix();
     _grades->showSolution(_solution);
+    emit solutionChanged();
 }
 
 // Подготовка матрицы для решения, выполняемые шаги:
@@ -105,4 +109,25 @@ void Core::createSolutionMatrix()
     }
     _solution = res;
     _totalGradesLoss = 5*_peopleCount - totalGrades;
+}
+
+// Заполняет оценки и важность случайными данными
+void Core::regenerate()
+{
+    _importance->generate();
+    _grades->generate();
+}
+
+// Показывает, что текущее решение стало недействительным
+// Вызывается при изменении вводных данных задачи
+void Core::onInvalidateSolution()
+{
+    _totalGradesLoss = -1;
+    emit solutionChanged();
+    _grades->hideSolution();
+}
+
+int Core::totalGradesLoss() const
+{
+    return _totalGradesLoss;
 }

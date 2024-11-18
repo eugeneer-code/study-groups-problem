@@ -1,4 +1,5 @@
 #include "ImportanceModel.h"
+#include <QRandomGenerator>
 
 ImportanceModel::ImportanceModel(QObject* parent)
     : QAbstractTableModel(parent)
@@ -15,9 +16,10 @@ void ImportanceModel::setCount(int count)
     }
     if(_data.size() < count) {
         beginInsertColumns(QModelIndex(), _data.size(), count-1);
-        _data.resize(count, 1);
+        _data.resize(count, generateImportance());
         endInsertColumns();
     }
+    emit invalidateSolution();
 }
 
 int ImportanceModel::rowCount(const QModelIndex& index) const
@@ -47,6 +49,7 @@ bool ImportanceModel::setData(const QModelIndex &index, const QVariant &value, i
     if(num > 2.0) num = 2.0;
     _data[index.column()] = num;
     emit dataChanged(index, index);
+    emit invalidateSolution();
 }
 
 Qt::ItemFlags ImportanceModel::flags(const QModelIndex &index) const
@@ -59,4 +62,18 @@ float ImportanceModel::getImportance(int index) const
 {
     if(index < 0 || index >= _data.size()) return 1;
     return _data.at(index);
+}
+
+float ImportanceModel::generateImportance() const
+{
+    float num = QRandomGenerator::global()->bounded(5, 20);
+    return num/10;
+}
+
+void ImportanceModel::generate()
+{
+    for(auto& data : _data){
+        data = generateImportance();
+    }
+    emit dataChanged(index(0,0), index(0, _data.size()-1));
 }

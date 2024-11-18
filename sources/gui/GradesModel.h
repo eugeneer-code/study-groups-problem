@@ -5,6 +5,10 @@
 
 class GradesModel : public QAbstractTableModel {
     Q_OBJECT
+
+signals:
+    void invalidateSolution();
+
 public:
 
     enum Roles {
@@ -17,6 +21,8 @@ public:
     Q_INVOKABLE void setDisciplinesCount(int count);
     int getGrade(int human, int discipline) const;
     void showSolution(Matrix<int> solution);
+    void hideSolution();
+    void generate();
 
 protected:
     int rowCount(const QModelIndex& = QModelIndex()) const override;
