@@ -5,6 +5,7 @@ import QtQuick.Layouts
 TableView {
     model: core.groupsModel
     boundsBehavior: Flickable.StopAtBounds
+    clip: true
     delegate: Rectangle {
         implicitWidth: 50
         implicitHeight: 30

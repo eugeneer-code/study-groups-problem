@@ -16,7 +16,7 @@ void ImportanceModel::setCount(int count)
     }
     if(_data.size() < count) {
         beginInsertColumns(QModelIndex(), _data.size(), count-1);
-        _data.resize(count, generateImportance());
+        for(int i=_data.size(); i<count; i++) _data.append(generateImportance());
         endInsertColumns();
     }
     emit invalidateSolution();

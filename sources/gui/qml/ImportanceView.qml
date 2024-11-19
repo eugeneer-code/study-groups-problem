@@ -5,6 +5,7 @@ import QtQuick.Layouts
 TableView {
     model: core.importanceModel
     boundsBehavior: Flickable.StopAtBounds
+    clip: true
     delegate: Rectangle {
         implicitWidth: 50
         implicitHeight: 30
@@ -22,12 +23,6 @@ TableView {
             horizontalAlignment: TextInput.AlignHCenter
             verticalAlignment: TextInput.AlignVCenter
             Component.onCompleted: selectAll()
-
-            /*validator: DoubleValidator{
-                bottom: 0.5
-                top: 2
-                decimals: 1
-            }*/
 
             TableView.onCommit: {
                 display = text

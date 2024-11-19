@@ -1,6 +1,6 @@
 set(TARGET_NAME study-groups)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 

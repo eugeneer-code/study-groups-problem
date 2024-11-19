@@ -7,6 +7,7 @@ ApplicationWindow {
     id: window
     width: 800
     height: 600
+    minimumWidth: 650
     visible: true
     title: "Распределение по направлениям"
 
