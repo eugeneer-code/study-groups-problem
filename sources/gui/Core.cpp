@@ -9,6 +9,13 @@ Core::Core(QObject* parent)
 {
     connect(_importance, &ImportanceModel::invalidateSolution, this, &Core::onInvalidateSolution);
     connect(_grades, &GradesModel::invalidateSolution, this, &Core::onInvalidateSolution);
+    _solveThread.start();
+}
+
+Core::~Core()
+{
+    _solveThread.quit();
+    if(_solveTree) delete _solveTree;
 }
 
 int Core::peopleCount() const
@@ -51,21 +58,28 @@ GroupsModel* Core::groupsModel()
     return _groups;
 }
 
+bool Core::solving() const
+{
+    return _solving;
+}
+
 void Core::solve()
 {
     if(_solveTree) delete _solveTree;
     // Подготовка матрицы
     prepareInitMatrix();
     // Решение
-    bool res = _solveTree->solve();
-    if(!res){
-        qDebug() << "Error solving problem";
-        return;
-    }
+    QMetaObject::invokeMethod(_solveTree, "start");
+}
+
+void Core::onSolved()
+{
     // Подготовка итоговой матрицы с решением
     createSolutionMatrix();
     _grades->showSolution(_solution);
     emit solutionChanged();
+    _solving = false;
+    emit stateChanged();
 }
 
 // Подготовка матрицы для решения, выполняемые шаги:
@@ -85,8 +99,14 @@ void Core::prepareInitMatrix()
             init.setData(row, col, num);
         }
     }
-    _solveTree = new SolveTree(init);
-
+    _solveTree = new SolveWrapper();
+    _solveTree->setInitData(init);
+    _solveTree->moveToThread(&_solveThread);
+    connect(_solveTree, &SolveWrapper::solving, this, [=](){
+        _solving = true;
+        emit stateChanged();
+    });
+    connect(_solveTree, &SolveWrapper::finished, this, &Core::onSolved);
 }
 
 /**

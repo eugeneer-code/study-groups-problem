@@ -4,7 +4,7 @@
 #include "ImportanceModel.h"
 #include "GradesModel.h"
 #include "GroupsModel.h"
-#include "SolveTree.h"
+#include "SolveWrapper.h"
 #include <QThread>
 
 class Core : public QObject {
@@ -15,13 +15,16 @@ class Core : public QObject {
     Q_PROPERTY(GradesModel* gradesModel READ gradesModel CONSTANT)
     Q_PROPERTY(GroupsModel* groupsModel READ groupsModel CONSTANT)
     Q_PROPERTY(int totalGradesLoss READ totalGradesLoss NOTIFY solutionChanged)
+    Q_PROPERTY(bool solving READ solving NOTIFY stateChanged)
 
 signals:
     void dataChanged();
     void solutionChanged();
+    void stateChanged();
 
 public:
     Core(QObject* parent = nullptr);
+    ~Core();
 
     int peopleCount() const;
     void setPeopleCount(int count);
@@ -34,11 +37,14 @@ public:
 
     int totalGradesLoss() const;
 
+    bool solving() const;
+
     Q_INVOKABLE void solve();
     Q_INVOKABLE void regenerate();
 
 private slots:
     void onInvalidateSolution();
+    void onSolved();
 
 private:
     void prepareInitMatrix();
@@ -50,9 +56,11 @@ private:
     ImportanceModel* _importance;
     GradesModel* _grades;
     GroupsModel* _groups;
-    SolveTree* _solveTree = nullptr;
+    SolveWrapper* _solveTree = nullptr;
     Matrix<int> _solution = {};
     int _totalGradesLoss = 0;
+    QThread _solveThread;
+    bool _solving = false;
 };
 
 

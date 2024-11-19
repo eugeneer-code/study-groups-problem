@@ -130,6 +130,11 @@ Flickable {
         Row {
             Layout.alignment: Qt.AlignRight
             spacing: 16
+            BusyIndicator {
+                visible: core.solving
+                height: 40
+                width: 40
+            }
             Button {
                 Layout.alignment: Qt.AlignRight
                 text: "Случайный набор"
@@ -137,7 +142,7 @@ Flickable {
             }
             Button {
                 text: "Рассчитать"
-                enabled: core.groupsModel.freePlaces == 0
+                enabled: core.groupsModel.freePlaces == 0 && !core.solving
                 onClicked: core.solve()
             }
         }
