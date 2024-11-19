@@ -5,6 +5,7 @@
 #include "GradesModel.h"
 #include "GroupsModel.h"
 #include "SolveWrapper.h"
+#include "Bruteforce.h"
 #include <QThread>
 
 class Core : public QObject {
@@ -16,6 +17,7 @@ class Core : public QObject {
     Q_PROPERTY(GroupsModel* groupsModel READ groupsModel CONSTANT)
     Q_PROPERTY(int totalGradesLoss READ totalGradesLoss NOTIFY solutionChanged)
     Q_PROPERTY(bool solving READ solving NOTIFY stateChanged)
+    Q_PROPERTY(Bruteforce* bruteforce READ bruteforce CONSTANT)
 
 signals:
     void dataChanged();
@@ -34,6 +36,7 @@ public:
     ImportanceModel* importanceModel();
     GradesModel* gradesModel();
     GroupsModel* groupsModel();
+    Bruteforce* bruteforce();
 
     int totalGradesLoss() const;
 
@@ -61,6 +64,7 @@ private:
     int _totalGradesLoss = 0;
     QThread _solveThread;
     bool _solving = false;
+    Bruteforce* _bruteforce;
 };
 
 

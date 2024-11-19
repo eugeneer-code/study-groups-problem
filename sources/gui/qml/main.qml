@@ -47,7 +47,6 @@ ApplicationWindow {
         height: parent.height - tabs.height - 1
         currentIndex: tabs.currentIndex
         InitPage {}
-        TreePage {}
         CheckPage {}
     }
 

@@ -6,6 +6,7 @@ Core::Core(QObject* parent)
     , _grades(new GradesModel(this))
     , _groups(new GroupsModel(this))
     , _totalGradesLoss(-1)
+    , _bruteforce(new Bruteforce(this))
 {
     connect(_importance, &ImportanceModel::invalidateSolution, this, &Core::onInvalidateSolution);
     connect(_grades, &GradesModel::invalidateSolution, this, &Core::onInvalidateSolution);
@@ -28,6 +29,7 @@ void Core::setPeopleCount(int count)
 {
     if(count <= 0) return;
     _peopleCount = count;
+    _bruteforce->setPeopleCount(count);
     emit dataChanged();
 }
 
@@ -41,6 +43,7 @@ void Core::setDisciplinesCount(int count)
     if(count <= 0) return;
     if(count > _peopleCount) return;
     _disciplinesCount = count;
+    _bruteforce->setDisciplinesCount(count);
     emit dataChanged();
 }
 
@@ -57,6 +60,11 @@ GradesModel* Core::gradesModel()
 GroupsModel* Core::groupsModel()
 {
     return _groups;
+}
+
+Bruteforce* Core::bruteforce()
+{
+    return _bruteforce;
 }
 
 bool Core::solving() const

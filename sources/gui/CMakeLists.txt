@@ -16,6 +16,8 @@ add_executable(${TARGET_NAME}
     GroupsModel.cpp
     SolveWrapper.h
     SolveWrapper.cpp
+    Bruteforce.h
+    Bruteforce.cpp
     res.qrc
 )
 
