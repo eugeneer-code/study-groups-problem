@@ -5,6 +5,7 @@
 #include "GradesModel.h"
 #include "GroupsModel.h"
 #include "SolveTree.h"
+#include <QThread>
 
 class Core : public QObject {
     Q_OBJECT

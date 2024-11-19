@@ -13,6 +13,12 @@ SolveTree::SolveTree(Matrix<int> m)
     _solution.fill(0);
 }
 
+SolveTree::~SolveTree()
+{
+    for(auto item : _items) delete item;
+}
+
+
 Matrix<int> SolveTree::solution()
 {
     return _solution;
@@ -40,7 +46,6 @@ void SolveTree::reduce(SolveTreeItem* item)
 
 bool SolveTree::nextStep()
 {
-    static int step = 0;
     // находим узел для ветвления с минимальной локальной нижней границей
     auto node = findNextNode();
     if(!node) return false;

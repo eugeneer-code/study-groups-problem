@@ -86,6 +86,7 @@ void Core::prepareInitMatrix()
         }
     }
     _solveTree = new SolveTree(init);
+
 }
 
 /**

@@ -38,6 +38,7 @@ struct SolveTreeItem {
 class SolveTree {
 public:
     SolveTree(Matrix<int> m);
+    ~SolveTree();
     bool nextStep();
     bool solve();
     Matrix<int> solution();

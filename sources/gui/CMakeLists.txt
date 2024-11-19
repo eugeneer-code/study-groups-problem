@@ -14,6 +14,8 @@ add_executable(${TARGET_NAME}
     GradesModel.cpp
     GroupsModel.h
     GroupsModel.cpp
+    SolveWrapper.h
+    SolveWrapper.cpp
     res.qrc
 )
 
