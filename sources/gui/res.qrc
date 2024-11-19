@@ -2,11 +2,11 @@
     <qresource prefix="/">
         <file>qml/main.qml</file>
         <file>qml/InitPage.qml</file>
-        <file>qml/TreePage.qml</file>
         <file>qml/CheckPage.qml</file>
         <file>qml/GradesView.qml</file>
         <file>qml/ImportanceView.qml</file>
         <file>qml/GroupsView.qml</file>
         <file>qml/AccentBadge.qml</file>
+        <file>qml/StyledTabButton.qml</file>
     </qresource>
 </RCC>

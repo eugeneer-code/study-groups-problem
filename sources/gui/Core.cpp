@@ -15,6 +15,7 @@ Core::Core(QObject* parent)
 Core::~Core()
 {
     _solveThread.quit();
+    _solveThread.wait(1000);
     if(_solveTree) delete _solveTree;
 }
 

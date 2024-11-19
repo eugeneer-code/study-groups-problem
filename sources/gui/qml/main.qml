@@ -26,25 +26,19 @@ ApplicationWindow {
     TabBar {
         id: tabs
         width: parent.width
-        TabButton {
+        StyledTabButton {
             text: "Начальные условия"
             width: implicitWidth
         }
-        TabButton {
-            text: "Дерево решений"
-            width: implicitWidth
-        }
-        TabButton {
+        StyledTabButton {
+            id: btn
             text: "Проверка перебором"
             width: implicitWidth
         }
-    }
-
-    Rectangle {
-        anchors.top: tabs.bottom
-        width: parent.width
-        height: 1
-        color: palette.alternateBase
+        background: Rectangle {
+            anchors.fill: parent
+            color: "#ebecec"
+        }
     }
 
     StackLayout {
