@@ -2,7 +2,11 @@
 
 Bruteforce::Bruteforce(QObject* parent)
     : QObject(parent)
+    , _progress(0)
+    , _resultModel(new BFResultModel(this))
+    , _bbSolution({})
 {
+    _calcThread.start();
 }
 
 void Bruteforce::setPeopleCount(int count)
@@ -33,7 +37,27 @@ double Bruteforce::countFactorial(int fact) const
     return fact* countFactorial(fact-1);
 }
 
-void Bruteforce::start()
+int Bruteforce::progress() const
+{
+    return _progress;
+}
+
+bool Bruteforce::active() const
+{
+    return false;
+}
+
+BFResultModel* Bruteforce::resultModel() const
+{
+    return _resultModel;
+}
+
+void Bruteforce::setBBSolution(Matrix<int> solution)
+{
+    _bbSolution = solution;
+}
+
+void Bruteforce::start(Matrix<int> init)
 {
 
 }

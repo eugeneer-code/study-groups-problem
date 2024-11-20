@@ -18,6 +18,10 @@ add_executable(${TARGET_NAME}
     SolveWrapper.cpp
     Bruteforce.h
     Bruteforce.cpp
+    BFResultModel.h
+    BFResultModel.cpp
+    BFCalc.h
+    BFCalc.cpp
     res.qrc
 )
 

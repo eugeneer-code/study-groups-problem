@@ -44,13 +44,15 @@ public:
 
     Q_INVOKABLE void solve();
     Q_INVOKABLE void regenerate();
+    Q_INVOKABLE void startBruteforce();
 
 private slots:
     void onInvalidateSolution();
     void onSolved();
 
 private:
-    void prepareInitMatrix();
+    Matrix<int> initMatrix();
+    void prepareSolution();
     void createSolutionMatrix();
 
 private:

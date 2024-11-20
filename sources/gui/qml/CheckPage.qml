@@ -25,18 +25,37 @@ Flickable {
             Button {
                 Layout.alignment: Qt.AlignVCenter
                 text: "Рассчитать"
-                onClicked: core.bruteforce.start()
+                onClicked: core.startBruteforce()
+                enabled: !core.bruteforce.active
             }
             ProgressBar {
                 Layout.alignment: Qt.AlignVCenter
                 width: 200
                 from: 0
                 to: 100
-                value: 10
+                value: core.bruteforce.progress
+                visible: core.bruteforce.active
             }
             Label {
                 Layout.alignment: Qt.AlignVCenter
-                text: "10%"
+                text: core.bruteforce.progress + "%"
+                visible: core.bruteforce.active
+            }
+        }
+
+        ListView {
+            width: parent.width
+            height: contentHeight
+            model: core.bruteforce.resultModel
+            delegate: Item {
+                width: parent.width
+                height: 30
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+                    border.width: 1
+                    border.color: palette.alternateBase
+                }
             }
         }
     }

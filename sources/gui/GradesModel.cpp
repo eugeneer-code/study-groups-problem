@@ -89,9 +89,9 @@ QHash<int, QByteArray> GradesModel::roleNames() const
 {
     auto roles = QAbstractItemModel::roleNames();
     roles.insert({
-                         {Grade, "_grade"},
-                         {Selected, "_selected"}
-                 });
+        {Grade, "_grade"},
+        {Selected, "_selected"}
+    });
     return roles;
 }
 

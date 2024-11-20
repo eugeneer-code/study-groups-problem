@@ -76,7 +76,7 @@ void Core::solve()
 {
     if(_solveTree) delete _solveTree;
     // Подготовка матрицы
-    prepareInitMatrix();
+    prepareSolution();
     // Решение
     QMetaObject::invokeMethod(_solveTree, "start");
 }
@@ -89,13 +89,13 @@ void Core::onSolved()
     emit solutionChanged();
     _solving = false;
     emit stateChanged();
+    _bruteforce->setBBSolution(_solution);
 }
 
 // Подготовка матрицы для решения, выполняемые шаги:
 // - раскрывает группу по дисциплине на отдельные места, в результате получаем матрицу размером [N, N]
 // - записываем в ячейки отставание по дисциплине вместо оценки, чтобы получилась задача минимизации
-// - создаём экземпляр класса SolveTree для дальнейшего решения
-void Core::prepareInitMatrix()
+Matrix<int> Core::initMatrix()
 {
     Matrix<int> init(_peopleCount, _peopleCount);
     for(int row=0; row<_peopleCount; row++){
@@ -108,8 +108,14 @@ void Core::prepareInitMatrix()
             init.setData(row, col, num);
         }
     }
+    return init;
+}
+
+// - создаём экземпляр класса SolveTree для дальнейшего решения
+void Core::prepareSolution()
+{
     _solveTree = new SolveWrapper();
-    _solveTree->setInitData(init);
+    _solveTree->setInitData(initMatrix());
     _solveTree->moveToThread(&_solveThread);
     connect(_solveTree, &SolveWrapper::solving, this, [=](){
         _solving = true;
@@ -160,4 +166,9 @@ void Core::onInvalidateSolution()
 int Core::totalGradesLoss() const
 {
     return _totalGradesLoss;
+}
+
+void Core::startBruteforce()
+{
+    _bruteforce->start(initMatrix());
 }
