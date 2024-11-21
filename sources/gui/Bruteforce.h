@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QThread>
 #include "BFResultModel.h"
+#include "BFCalc.h"
 
 class Bruteforce : public QObject {
     Q_OBJECT
@@ -19,6 +20,7 @@ signals:
 
 public:
     Bruteforce(QObject* parent = nullptr);
+    ~Bruteforce();
 
     void setPeopleCount(int count);
     void setDisciplinesCount(int count);
@@ -31,19 +33,28 @@ public:
 
     BFResultModel* resultModel() const;
 
+    // результат решения методом Bounds&Branches
     void setBBSolution(Matrix<int> solution);
     void start(Matrix<int> init);
+    void stop();
 
 private:
     double countFactorial(int fact) const;
+    void stopThread();
+
+private slots:
+    void onStarted();
+    void onFinished();
+    void onProgress(int percent);
 
 private:
     int _people;
     int _disciplines;
     int _progress;
     BFResultModel* _resultModel;
-    Matrix<int> _bbSolution;  // результат решения методом Bounds&Branches
-    QThread _calcThread;
+    QThread* _calcThread;
+    BFCalc* _calc;
+    bool _active;
 };
 
 

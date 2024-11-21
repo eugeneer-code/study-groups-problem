@@ -172,3 +172,8 @@ void Core::startBruteforce()
 {
     _bruteforce->start(initMatrix());
 }
+
+void Core::stopBruteforce()
+{
+    _bruteforce->stop();
+}

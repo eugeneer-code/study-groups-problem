@@ -1,5 +1,7 @@
 #include "BFResultModel.h"
 
+#define MAX_COUNT 15
+
 BFResultModel::BFResultModel(QObject *parent)
     : QAbstractListModel(parent)
 {
@@ -32,4 +34,46 @@ QHash<int, QByteArray> BFResultModel::roleNames() const
          {Selected, "_selected"}
     });
     return roles;
+}
+
+void BFResultModel::addSolution(int cost, Matrix<int> m)
+{
+    ListItem item{m, cost, m == _bbSolution};
+    if(_data.size() + 1 <= MAX_COUNT) {
+        beginInsertRows({}, 0, 0);
+        _data.append(item);
+        endInsertRows();
+    }
+    else
+    {
+        _data.append(item);
+    }
+    std::sort(_data.begin(), _data.end(), [](const auto& l, const auto& r){return l.cost < r.cost;});
+    // Удаление делаем после сортировки, чтобы удалился самый плохой вариант
+    if(_data.size() > MAX_COUNT) {
+        _data.removeLast();
+    }
+    emit dataChanged(index(0), index(_data.size()-1));
+}
+
+void BFResultModel::clearData()
+{
+    if(_data.isEmpty()) return;
+    beginRemoveRows({}, 0, _data.size() - 1);
+    _data.clear();
+    endRemoveRows();
+}
+
+void BFResultModel::setBBSolution(Matrix<int> m)
+{
+    _bbSolution = m;
+    updateBBSolution();
+}
+
+void BFResultModel::updateBBSolution()
+{
+    for(auto& item : _data){
+        item.match = item.result == _bbSolution;
+    }
+    emit dataChanged(index(0), index(_data.size()-1), {Selected});
 }

@@ -45,6 +45,7 @@ public:
     Q_INVOKABLE void solve();
     Q_INVOKABLE void regenerate();
     Q_INVOKABLE void startBruteforce();
+    Q_INVOKABLE void stopBruteforce();
 
 private slots:
     void onInvalidateSolution();

@@ -24,13 +24,23 @@ public:
         bool match = false;
     };
 
+    void clearData();
+    void setBBSolution(Matrix<int> m);
+
+public slots:
+    void addSolution(int cost, Matrix<int> m);
+
 protected:
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
 private:
+    void updateBBSolution();
+
+private:
     QList<ListItem> _data;
+    Matrix<int> _bbSolution = {};
 };
 
 

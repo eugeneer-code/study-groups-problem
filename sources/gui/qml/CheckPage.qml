@@ -24,9 +24,11 @@ Flickable {
             spacing: 16
             Button {
                 Layout.alignment: Qt.AlignVCenter
-                text: "Рассчитать"
-                onClicked: core.startBruteforce()
-                enabled: !core.bruteforce.active
+                text: core.bruteforce.active ? "Остановить" : "Рассчитать"
+                onClicked: {
+                    if(core.bruteforce.active) core.stopBruteforce()
+                    else core.startBruteforce()
+                }
             }
             ProgressBar {
                 Layout.alignment: Qt.AlignVCenter
@@ -44,8 +46,8 @@ Flickable {
         }
 
         ListView {
-            width: parent.width
-            height: contentHeight
+            Layout.fillWidth: true
+            Layout.preferredHeight: contentHeight
             model: core.bruteforce.resultModel
             delegate: Item {
                 width: parent.width
@@ -55,6 +57,9 @@ Flickable {
                     color: "transparent"
                     border.width: 1
                     border.color: palette.alternateBase
+                }
+                Label {
+                    text: index + " " + _cost
                 }
             }
         }

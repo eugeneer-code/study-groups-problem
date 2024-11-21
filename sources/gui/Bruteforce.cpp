@@ -2,11 +2,20 @@
 
 Bruteforce::Bruteforce(QObject* parent)
     : QObject(parent)
+    , _people(1)
+    , _disciplines(1)
     , _progress(0)
     , _resultModel(new BFResultModel(this))
-    , _bbSolution({})
+    , _calcThread(nullptr)
+    , _calc(nullptr)
+    , _active(false)
 {
-    _calcThread.start();
+
+}
+
+Bruteforce::~Bruteforce()
+{
+    stopThread();
 }
 
 void Bruteforce::setPeopleCount(int count)
@@ -44,7 +53,7 @@ int Bruteforce::progress() const
 
 bool Bruteforce::active() const
 {
-    return false;
+    return _active;
 }
 
 BFResultModel* Bruteforce::resultModel() const
@@ -54,10 +63,59 @@ BFResultModel* Bruteforce::resultModel() const
 
 void Bruteforce::setBBSolution(Matrix<int> solution)
 {
-    _bbSolution = solution;
+    _resultModel->setBBSolution(solution);
 }
 
 void Bruteforce::start(Matrix<int> init)
 {
+    _calcThread = new QThread();
+    _calc = new BFCalc();
+    connect(_calc, &BFCalc::started, this, &Bruteforce::onStarted, Qt::QueuedConnection);
+    connect(_calc, &BFCalc::finished, this, &Bruteforce::onFinished, Qt::QueuedConnection);
+    connect(_calc, &BFCalc::progress, this, &Bruteforce::onProgress, Qt::QueuedConnection);
+    connect(_calc, &BFCalc::solutionFound, _resultModel, &BFResultModel::addSolution, Qt::QueuedConnection);
 
+    _calc->moveToThread(_calcThread);
+    _calcThread->start();
+
+    _resultModel->clearData();
+
+    QMetaObject::invokeMethod(_calc, "start", Q_ARG(Matrix<int>, init));
+}
+
+void Bruteforce::stop()
+{
+    stopThread();
+}
+
+void Bruteforce::stopThread()
+{
+    onFinished();
+    if(!_calcThread) return;
+
+    _calcThread->requestInterruption();
+    _calcThread->wait(1000);
+    _calcThread->quit();
+    _calcThread->deleteLater();
+    delete _calc;
+    _calcThread = nullptr;
+    _calc = nullptr;
+}
+
+void Bruteforce::onStarted()
+{
+    _active = true;
+    emit statusChanged();
+}
+
+void Bruteforce::onFinished()
+{
+    _active = false;
+    emit statusChanged();
+}
+
+void Bruteforce::onProgress(int percent)
+{
+    _progress = percent;
+    emit progressChanged();
 }
