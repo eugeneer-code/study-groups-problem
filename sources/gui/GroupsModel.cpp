@@ -121,3 +121,8 @@ int GroupsModel::getDisciplineIndex(int index)
     }
     return -1;
 }
+
+QList<int> GroupsModel::groups() const
+{
+    return _data;
+}

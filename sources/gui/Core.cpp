@@ -170,7 +170,7 @@ int Core::totalGradesLoss() const
 
 void Core::startBruteforce()
 {
-    _bruteforce->start(initMatrix());
+    _bruteforce->start(initMatrix(), _groups->groups(), _grades->grades(), _importance->rates());
 }
 
 void Core::stopBruteforce()

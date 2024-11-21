@@ -20,6 +20,7 @@ QVariant BFResultModel::data(const QModelIndex &index, int role) const
     switch(role){
         case Solution: return "sol";
         case Cost: return item.cost;
+        case GradesLoss: return item.gradesLoss;
         case Selected: return item.match;
         default: return QVariant();
     }
@@ -31,14 +32,15 @@ QHash<int, QByteArray> BFResultModel::roleNames() const
     roles.insert({
          {Solution, "_solution"},
          {Cost, "_cost"},
+         {GradesLoss, "_gradesLoss"},
          {Selected, "_selected"}
     });
     return roles;
 }
 
-void BFResultModel::addSolution(int cost, Matrix<int> m)
+void BFResultModel::addSolution(int cost, int gradesLoss, Matrix<int> m)
 {
-    ListItem item{m, cost, m == _bbSolution};
+    ListItem item{m, cost, gradesLoss,m == _bbSolution};
     if(_data.size() + 1 <= MAX_COUNT) {
         beginInsertRows({}, 0, 0);
         _data.append(item);

@@ -21,6 +21,7 @@ Bruteforce::~Bruteforce()
 void Bruteforce::setPeopleCount(int count)
 {
     _people = count;
+    emit numChanged();
 }
 
 void Bruteforce::setDisciplinesCount(int count)
@@ -36,8 +37,8 @@ int Bruteforce::disciplines() const
 
 double Bruteforce::factorial() const
 {
-    if(_disciplines <= 0) return 0;
-    return countFactorial(_disciplines);
+    if(_people <= 0) return 0;
+    return countFactorial(_people);
 }
 
 double Bruteforce::countFactorial(int fact) const
@@ -66,7 +67,7 @@ void Bruteforce::setBBSolution(Matrix<int> solution)
     _resultModel->setBBSolution(solution);
 }
 
-void Bruteforce::start(Matrix<int> init)
+void Bruteforce::start(Matrix<int> init, QList<int> groups, Matrix<int> grades, QList<float> rates)
 {
     _calcThread = new QThread();
     _calc = new BFCalc();
@@ -80,7 +81,11 @@ void Bruteforce::start(Matrix<int> init)
 
     _resultModel->clearData();
 
-    QMetaObject::invokeMethod(_calc, "start", Q_ARG(Matrix<int>, init));
+    QMetaObject::invokeMethod(_calc, "start",
+        Q_ARG(Matrix<int>, init),
+        Q_ARG(QList<int>, groups),
+        Q_ARG(Matrix<int>, grades),
+        Q_ARG(QList<float>, rates));
 }
 
 void Bruteforce::stop()

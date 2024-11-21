@@ -148,3 +148,8 @@ void GradesModel::generate()
     }
     emit dataChanged(index(0,0), index(_people-1, _disciplines-1), {Grade});
 }
+
+Matrix<int> GradesModel::grades() const
+{
+    return _grades;
+}

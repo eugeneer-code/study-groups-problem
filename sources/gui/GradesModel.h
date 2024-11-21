@@ -23,6 +23,7 @@ public:
     void showSolution(Matrix<int> solution);
     void hideSolution();
     void generate();
+    Matrix<int> grades() const;
 
 protected:
     int rowCount(const QModelIndex& = QModelIndex()) const override;

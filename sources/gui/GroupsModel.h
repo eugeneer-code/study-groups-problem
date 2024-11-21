@@ -18,6 +18,8 @@ public:
      */
     int getDisciplineIndex(int index);
 
+    QList<int> groups() const;
+
     enum Roles {
         GroupSize = Qt::UserRole + 1,
         MaxSize

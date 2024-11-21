@@ -12,6 +12,7 @@ public:
     Q_INVOKABLE void setCount(int count);
     float getImportance(int index) const;
     void generate();
+    QList<float> rates() const;
 
 protected:
     int rowCount(const QModelIndex& = QModelIndex()) const override;

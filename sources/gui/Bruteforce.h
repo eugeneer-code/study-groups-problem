@@ -35,7 +35,7 @@ public:
 
     // результат решения методом Bounds&Branches
     void setBBSolution(Matrix<int> solution);
-    void start(Matrix<int> init);
+    void start(Matrix<int> init, QList<int> groups, Matrix<int> grades, QList<float> rates);
     void stop();
 
 private:

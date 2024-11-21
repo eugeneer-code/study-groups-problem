@@ -54,12 +54,13 @@ Flickable {
                 height: 30
                 Rectangle {
                     anchors.fill: parent
-                    color: "transparent"
+                    color: _selected ? palette.highlight : "transparent"
                     border.width: 1
                     border.color: palette.alternateBase
                 }
                 Label {
-                    text: index + " " + _cost
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: _cost
                 }
             }
         }

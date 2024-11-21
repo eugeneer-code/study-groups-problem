@@ -15,12 +15,14 @@ public:
     enum Roles {
         Solution = Qt::UserRole + 1,
         Cost,
+        GradesLoss,
         Selected
     };
 
     struct ListItem {
         Matrix<int> result = {};
         int cost = 0;
+        int gradesLoss = 0;
         bool match = false;
     };
 
@@ -28,7 +30,7 @@ public:
     void setBBSolution(Matrix<int> m);
 
 public slots:
-    void addSolution(int cost, Matrix<int> m);
+    void addSolution(int cost, int gradesLoss, Matrix<int> m);
 
 protected:
     int rowCount(const QModelIndex &parent) const override;

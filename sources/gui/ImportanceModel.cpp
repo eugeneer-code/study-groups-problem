@@ -77,3 +77,8 @@ void ImportanceModel::generate()
     }
     emit dataChanged(index(0,0), index(0, _data.size()-1));
 }
+
+QList<float> ImportanceModel::rates() const
+{
+    return _data;
+}
