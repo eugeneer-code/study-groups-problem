@@ -8,6 +8,9 @@
 #include "Bruteforce.h"
 #include <QThread>
 
+/**
+ * Ядро приложения. Является точкой входа для qml, содержит текущее состояние, выполняется в главном потоке приложения
+ */
 class Core : public QObject {
     Q_OBJECT
     Q_PROPERTY(int peopleCount READ peopleCount WRITE setPeopleCount NOTIFY dataChanged)
@@ -57,19 +60,16 @@ private:
     void createSolutionMatrix();
 
 private:
-    int _peopleCount = 1;
-    int _disciplinesCount = 1;
-    ImportanceModel* _importance;
-    GradesModel* _grades;
-    GroupsModel* _groups;
-    SolveWrapper* _solveTree = nullptr;
-    Matrix<int> _solution = {};
-    int _totalGradesLoss = 0;
-    QThread _solveThread;
-    bool _solving = false;
-    Bruteforce* _bruteforce;
+    int _peopleCount = 1;                   // количество претендентов
+    int _disciplinesCount = 1;              // количество дисциплин
+    ImportanceModel* _importance;           // модель с важностью дисциплин
+    GradesModel* _grades;                   // модель с оценками по дисциплинам
+    GroupsModel* _groups;                   // модель с разделением претендентов по группам
+    SolveWrapper* _solveTree = nullptr;     // обёртка SolveTree для выполнения в отдельном потоке
+    Matrix<int> _solution = {};             // найденное решение
+    int _totalGradesLoss = 0;               // общее отставание успеваемости у найденного решения
+    QThread _solveThread;                   // поток для поиска решения
+    bool _solving = false;                  // показывает, что производится вычисление
+    Bruteforce* _bruteforce;                // объект для поиска решения перебором
 };
-
-
-
 #endif //CORE_H

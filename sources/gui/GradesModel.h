@@ -3,6 +3,10 @@
 #include <QAbstractTableModel>
 #include "Matrix.h"
 
+/**
+ * Табличная модель для отображения и задания оценок по дисциплинам
+ * Также отображает текущее найденное решение
+ */
 class GradesModel : public QAbstractTableModel {
     Q_OBJECT
 
@@ -10,15 +14,16 @@ signals:
     void invalidateSolution();
 
 public:
+    GradesModel(QObject* parent = nullptr);
 
     enum Roles {
         Grade = Qt::UserRole + 1,
         Selected
     };
 
-    GradesModel(QObject* parent = nullptr);
     Q_INVOKABLE void setPeopleCount(int count);
     Q_INVOKABLE void setDisciplinesCount(int count);
+
     int getGrade(int human, int discipline) const;
     void showSolution(Matrix<int> solution);
     void hideSolution();

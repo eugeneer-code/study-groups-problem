@@ -3,6 +3,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt.labs.qmlmodels
 
+/**
+ * Отображение и редактирование оценок
+ */
 TableView {
     model: core.gradesModel
     boundsBehavior: Flickable.StopAtBounds

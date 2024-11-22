@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+/**
+ * Отображение и редактирование важности направлений
+ */
 TableView {
     model: core.importanceModel
     boundsBehavior: Flickable.StopAtBounds

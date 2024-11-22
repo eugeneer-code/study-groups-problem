@@ -5,6 +5,9 @@
 #include "BFResultModel.h"
 #include "BFCalc.h"
 
+/**
+ * Класс для управления решением методом перебора. Содержит текущее состояние
+ */
 class Bruteforce : public QObject {
     Q_OBJECT
     Q_PROPERTY(int people READ people NOTIFY numChanged)
@@ -48,14 +51,12 @@ private slots:
     void onProgress(int percent);
 
 private:
-    int _people = 1;
-    int _disciplines = 1;
-    int _progress = 0;
-    BFResultModel* _resultModel;
-    QThread* _calcThread;
-    BFCalc* _calc;
-    bool _active;
+    int _people;                       // количество претендентов
+    int _disciplines;                  // количество дисциплин
+    int _progress;                     // текущий статус выполнения в процентах
+    BFResultModel* _resultModel;       // модель для отображения списка с лучшими результатами
+    QThread* _calcThread;              // поток, в котором происходит вычисление
+    BFCalc* _calc;                     // класс, производящий вычисление
+    bool _active;                      // показывает выполняется ли в данный момент поиск
 };
-
-
 #endif //BRUTEFORCE_H

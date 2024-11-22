@@ -4,6 +4,9 @@
 #include "Matrix.h"
 #include "SolveTree.h"
 
+/**
+ * Класс для переноса SolveTree в отдельный поток
+ */
 class SolveWrapper : public QObject {
     Q_OBJECT
 public:

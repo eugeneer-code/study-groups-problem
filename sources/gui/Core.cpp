@@ -17,7 +17,7 @@ Core::~Core()
 {
     _solveThread.quit();
     _solveThread.wait(1000);
-    if(_solveTree) delete _solveTree;
+    delete _solveTree;
 }
 
 int Core::peopleCount() const
@@ -41,6 +41,7 @@ int Core::disciplinesCount() const
 void Core::setDisciplinesCount(int count)
 {
     if(count <= 0) return;
+    // количество дисциплин не может превышать число претендентов
     if(count > _peopleCount) return;
     _disciplinesCount = count;
     _bruteforce->setDisciplinesCount(count);
@@ -89,6 +90,7 @@ void Core::onSolved()
     emit solutionChanged();
     _solving = false;
     emit stateChanged();
+    // Передаём полученное решение в перебор для выделения его в списке
     _bruteforce->setBBSolution(_solution);
 }
 
@@ -111,7 +113,7 @@ Matrix<int> Core::initMatrix()
     return init;
 }
 
-// - создаём экземпляр класса SolveTree для дальнейшего решения
+// Создаём SolveWrapper для решения в отдельном потоке
 void Core::prepareSolution()
 {
     _solveTree = new SolveWrapper();
@@ -124,10 +126,8 @@ void Core::prepareSolution()
     connect(_solveTree, &SolveWrapper::finished, this, &Core::onSolved);
 }
 
-/**
- * Сжимаем полученную матрицу с решением транспортной задачи по группам,
- * чтобы в столбцах матрицы были указаны дисциплины, получится матрица [N, M]
- */
+// Сжимаем полученную матрицу с решением транспортной задачи по группам,
+// чтобы в столбцах матрицы были указаны дисциплины, получится матрица [N, M]
 void Core::createSolutionMatrix()
 {
     auto solution = _solveTree->solution();
@@ -168,6 +168,7 @@ int Core::totalGradesLoss() const
     return _totalGradesLoss;
 }
 
+// Решение перебором - передаём все начальные условия
 void Core::startBruteforce()
 {
     _bruteforce->start(initMatrix(), _groups->groups(), _grades->grades(), _importance->rates());

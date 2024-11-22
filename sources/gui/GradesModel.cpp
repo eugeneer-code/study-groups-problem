@@ -95,6 +95,7 @@ QHash<int, QByteArray> GradesModel::roleNames() const
     return roles;
 }
 
+// Генератор случайной оценки
 int GradesModel::generateGrade()
 {
     int num = QRandomGenerator::global()->bounded(0, 99);
@@ -138,6 +139,7 @@ void GradesModel::hideSolution()
     emit dataChanged(index(0,0), index(_people-1, _disciplines-1), {Selected});
 }
 
+// Задаёт случайную оценку по всей таблице
 void GradesModel::generate()
 {
     emit invalidateSolution();

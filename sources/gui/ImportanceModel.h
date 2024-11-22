@@ -2,6 +2,10 @@
 #define IMPORTANCEMODEL_H
 #include <QAbstractTableModel>
 
+/**
+ * Модель для отображения и задания важности направления
+ * Табличная модель используется из-за наличия делегата редактирования в таблице, в ListView такого нет
+ */
 class ImportanceModel : public QAbstractTableModel {
     Q_OBJECT
 signals:

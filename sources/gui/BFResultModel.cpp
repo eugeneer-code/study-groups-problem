@@ -1,5 +1,6 @@
 #include "BFResultModel.h"
 
+// Показывает сколько решений нужно выводить в таблице
 #define MAX_COUNT 15
 
 BFResultModel::BFResultModel(QObject *parent)
@@ -46,8 +47,7 @@ void BFResultModel::addSolution(int cost, int gradesLoss, Matrix<int> m)
         _data.append(item);
         endInsertRows();
     }
-    else
-    {
+    else {
         _data.append(item);
     }
     std::sort(_data.begin(), _data.end(), [](const auto& l, const auto& r){return l.cost < r.cost;});
@@ -80,6 +80,8 @@ void BFResultModel::updateBBSolution()
     emit dataChanged(index(0), index(_data.size()-1), {Selected});
 }
 
+// Перевод матрицы решения в стоку
+// Выводит список индексов, в которых записаны единицы
 QString BFResultModel::solutionString(Matrix<int>& sol)
 {
     QString res;

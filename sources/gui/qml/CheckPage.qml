@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+/**
+ * Страница с решением методом перебора
+ */
 Flickable {
     contentHeight: layout.height + 40
     contentWidth: width

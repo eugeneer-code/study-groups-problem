@@ -5,6 +5,7 @@
 #include <QRandomGenerator>
 #include <QThread>
 
+// для вывода в таблицу используется 15 лучших результатов
 #define MAX_COUNT 15
 
 BFCalc::BFCalc(QObject* parent)
@@ -31,24 +32,23 @@ void BFCalc::start(Matrix<int> init, QList<int> groups, Matrix<int> grades, QLis
     emit finished();
 }
 
-/**
- * Рекурсивно подбираем все возможные варианты решения матрицы
- */
+// Рекурсивно подбираем все возможные варианты решения матрицы
 void BFCalc::calc(QList<int> nums, QList<int> sol)
 {
-    if(nums.isEmpty())
-    {
+    // Когда свободных индексов не осталось, вся матрица решения будет заполненной
+    if(nums.isEmpty()) {
         // когда решение готово, считаем его стоимость
         calcResult(sol);
         sendProgress();
         return;
     }
-    for(int i=0; i<nums.count(); i++)
-    {
+    for(int i=0; i<nums.count(); i++) {
         auto next = sol;
         next.append(nums.at(i));
+        // Забираем текущий индекс из списка доступных индексов
         auto copy = nums;
         copy.removeAt(i);
+        // В оставшиеся столбцы передаём свободные индексы
         calc(copy, next);
         if(QThread::currentThread()->isInterruptionRequested()) return;
     }
@@ -90,37 +90,34 @@ Matrix<int> BFCalc::createSolutionMatrix(Matrix<int> m, int& gradesLoss, int& re
 {
     Matrix<int> res(m.rows(), _groups.size());
     res.fill(0);
-    int totalGrades = 0;
-    int totalCost = 0;
+    gradesLoss = 0;
+    resultCost = 0;
     for(int row=0; row<m.rows(); row++) {
         for(int col=0; col<m.columns(); col++) {
             int s = m.get(row, col);
             if(s == 0) continue;
             int discIndex = getDisciplineIndex(col);
-            totalCost += _rates.at(discIndex) * 10 * (5 - _grades.get(row, discIndex));
+            resultCost += _rates.at(discIndex) * 10 * (5 - _grades.get(row, discIndex));
             res.setData(row, discIndex, s);
-            totalGrades += 5 - _grades.get(row, discIndex);
+            gradesLoss += 5 - _grades.get(row, discIndex);
         }
     }
-    resultCost = totalCost;
-    gradesLoss = totalGrades;
     return res;
 }
 
-/**
- * Получение индекса направления по индексу человека
- */
+// Получение индекса направления по индексу человека
 int BFCalc::getDisciplineIndex(int index) const
 {
     if(index >= _grades.rows()) return -1;
     int currCount = 0;
-    for(int i=0; i<_groups.size(); i++){
+    for(int i=0; i<_groups.size(); i++) {
         currCount += _groups.at(i);
         if(index < currCount) return i;
     }
     return -1;
 }
 
+// Показывает нужно ли добавлять найденный результат в таблицу
 bool BFCalc::addResult(Matrix<int> m, int cost) const
 {
     // Место ещё есть, добавляем любой результат
@@ -128,8 +125,7 @@ bool BFCalc::addResult(Matrix<int> m, int cost) const
     // В списке уже есть варианты лучше, не добавляем
     if(_bestResults.last().first < cost) return false;
     bool sameResult = false;
-    for(const auto& it : _bestResults)
-    {
+    for(const auto& it : _bestResults) {
         if(it.first != cost) continue;
         // такое решение уже есть, не добавляем повтор
         if(m == it.second) return false;
@@ -137,13 +133,13 @@ bool BFCalc::addResult(Matrix<int> m, int cost) const
     return true;
 }
 
+// Рассчёт текущего процента выполнения
 void BFCalc::sendProgress()
 {
     static int prevPercents = 0;
     _stepNumber++;
     int64_t percents = _stepNumber * 100 / _totalSteps;
-    if(percents != prevPercents)
-    {
+    if(percents != prevPercents) {
         emit progress(percents);
         prevPercents = percents;
     }

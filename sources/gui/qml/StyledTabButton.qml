@@ -1,6 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 
+/**
+ * Стилизованный TabButton
+ */
 TabButton {
     id: btn
     implicitWidth: _title.implicitWidth + 24

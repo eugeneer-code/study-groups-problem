@@ -5,6 +5,8 @@ GroupsModel::GroupsModel(QObject* parent)
 {
 }
 
+// Возвращает количество нераспределённых мест
+// Для поиска решения все места должны быть распределены
 int GroupsModel::freePlaces() const
 {
     return _freePlaces;
@@ -103,6 +105,7 @@ void GroupsModel::updateFreePlaces()
 void GroupsModel::fixGroups(int places)
 {
     while(places < 0) {
+        // находим группу, в которой больше всего мест и уменьшаем на 1
         auto maxIt = std::max_element(_data.begin(), _data.end());
         if (maxIt == _data.end()) return;
         *maxIt = *maxIt - 1;
@@ -110,7 +113,7 @@ void GroupsModel::fixGroups(int places)
     }
 }
 
-
+// Получение индекса группы по индексу претендента
 int GroupsModel::getDisciplineIndex(int index)
 {
     if(index >= _people) return -1;

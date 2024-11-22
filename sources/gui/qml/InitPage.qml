@@ -3,6 +3,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCore
 
+/**
+ * Страница с поиском решения методом ветвей и границ
+ */
 Flickable {
     contentHeight: layout.height + 40
     contentWidth: width

@@ -19,12 +19,13 @@ public:
         Selected
     };
 
+    // описание найденного решения
     struct ListItem {
-        Matrix<int> result = {};
-        int cost = 0;
-        int gradesLoss = 0;
-        bool match = false;
-        QString solution;
+        Matrix<int> result = {};   // матрица решения
+        int cost = 0;              // стоимость с учётом важности дисциплин
+        int gradesLoss = 0;        // общее отставание
+        bool match = false;        // показывает совпадает ли с решением, найденным методом ветвей и границ
+        QString solution;          // строчное представление матрицы решения
     };
 
     void clearData();
@@ -43,9 +44,7 @@ private:
     QString solutionString(Matrix<int>& sol);
 
 private:
-    QList<ListItem> _data;
-    Matrix<int> _bbSolution = {};
+    QList<ListItem> _data;          // лучшие решения
+    Matrix<int> _bbSolution = {};   // решение методом ветвей и границ
 };
-
-
 #endif //BFRESULTMODEL_H

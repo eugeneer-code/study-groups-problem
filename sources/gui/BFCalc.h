@@ -3,6 +3,9 @@
 #include <QObject>
 #include "Matrix.h"
 
+/**
+ * Объект для вычисления решения методом перебора в отдельном потоке
+ */
 class BFCalc : public QObject {
     Q_OBJECT
 public:
@@ -26,13 +29,13 @@ signals:
     void solutionFound(int cost, int gradesLoss, Matrix<int> m);
 
 private:
-    Matrix<int> _initMatrix = {};
-    QList<int> _groups;
-    Matrix<int> _grades = {};
-    QList<float> _rates;
-    QList<QPair<int, Matrix<int>>> _bestResults;
-    int64_t _stepNumber;
-    int64_t _totalSteps;
+    Matrix<int> _initMatrix = {};                 // матрица для решения
+    QList<int> _groups;                           // разделение по группам
+    Matrix<int> _grades = {};                     // оценки
+    QList<float> _rates;                          // важность направлений
+    QList<QPair<int, Matrix<int>>> _bestResults;  // последние лучшие результаты вычисления
+    int64_t _stepNumber;                          // номер текущего шага
+    int64_t _totalSteps;                          // общее количество шагов
 };
 
 

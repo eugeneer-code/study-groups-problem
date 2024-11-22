@@ -10,7 +10,6 @@ Bruteforce::Bruteforce(QObject* parent)
     , _calc(nullptr)
     , _active(false)
 {
-
 }
 
 Bruteforce::~Bruteforce()
@@ -44,7 +43,7 @@ double Bruteforce::factorial() const
 double Bruteforce::countFactorial(int fact) const
 {
     if(fact == 1) return 1;
-    return fact* countFactorial(fact-1);
+    return fact * countFactorial(fact-1);
 }
 
 int Bruteforce::progress() const

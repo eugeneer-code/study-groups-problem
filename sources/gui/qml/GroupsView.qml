@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+/**
+ * Отображение и редактирование размера учебных групп
+ */
 TableView {
     model: core.groupsModel
     boundsBehavior: Flickable.StopAtBounds

@@ -1,6 +1,10 @@
 import QtQuick
 import QtQuick.Controls
 
+/**
+ * Цветная панель с заданным текстом
+ * Используется для отображения количества свободных мест
+ */
 Item {
     property alias text: label.text
 

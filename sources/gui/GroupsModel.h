@@ -2,6 +2,10 @@
 #define GROUPSMODEL_H
 #include <QAbstractTableModel>
 
+/**
+ * Модель для отображения и задания размера учебных групп
+ * Табличная модель используется из-за наличия делегата редактирования в таблице, в ListView такого нет
+ */
 class GroupsModel : public QAbstractTableModel {
     Q_OBJECT
     Q_PROPERTY(int freePlaces READ freePlaces NOTIFY freePlacesChanged)
@@ -10,20 +14,18 @@ signals:
 
 public:
     GroupsModel(QObject* parent = nullptr);
-    Q_INVOKABLE void setDisciplinesCount(int count);
-    Q_INVOKABLE void setPeopleCount(int count);
-    int freePlaces() const;
-    /**
-     * Получение индекса направления по индексу человека
-     */
-    int getDisciplineIndex(int index);
-
-    QList<int> groups() const;
 
     enum Roles {
         GroupSize = Qt::UserRole + 1,
         MaxSize
     };
+
+    Q_INVOKABLE void setDisciplinesCount(int count);
+    Q_INVOKABLE void setPeopleCount(int count);
+
+    int freePlaces() const;
+    int getDisciplineIndex(int index);
+    QList<int> groups() const;
 
 protected:
     int rowCount(const QModelIndex& = QModelIndex()) const override;
