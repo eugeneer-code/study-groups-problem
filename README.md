@@ -27,6 +27,14 @@ http://sa.technolog.edu.ru/repository/saoipr_transport.pdf
 
 Примечание: на Windows может потребоваться указание ``CMAKE_INSTALL_PREFIX`` абсолютным путём.
 
+Пример сборки с кастомным Qt:
+```
+  mkdir build
+  cd build
+  cmake -DCMAKE_PREFIX_PATH=/path/to/Qt/lib/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install ..
+  cmake --build . --config Release --target install
+```
+
 
 Описание решения
 ----------------

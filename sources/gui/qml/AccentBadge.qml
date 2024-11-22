@@ -13,14 +13,14 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: palette.accent
+        color: "#008F75"
         radius: 4
         opacity: 0.2
     }
     Label {
         id: label
         anchors.centerIn: parent
-        color: palette.accent
+        color: "#008F75"
         font.bold: true
     }
 }
