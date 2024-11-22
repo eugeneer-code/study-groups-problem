@@ -7,7 +7,7 @@
 
 class Bruteforce : public QObject {
     Q_OBJECT
-    Q_PROPERTY(int disciplines READ disciplines NOTIFY numChanged)
+    Q_PROPERTY(int people READ people NOTIFY numChanged)
     Q_PROPERTY(double factorial READ factorial NOTIFY numChanged)
     Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(bool active READ active NOTIFY statusChanged)
@@ -25,7 +25,7 @@ public:
     void setPeopleCount(int count);
     void setDisciplinesCount(int count);
 
-    int disciplines() const;
+    int people() const;
     double factorial() const;
 
     int progress() const;
@@ -48,9 +48,9 @@ private slots:
     void onProgress(int percent);
 
 private:
-    int _people;
-    int _disciplines;
-    int _progress;
+    int _people = 1;
+    int _disciplines = 1;
+    int _progress = 0;
     BFResultModel* _resultModel;
     QThread* _calcThread;
     BFCalc* _calc;

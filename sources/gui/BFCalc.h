@@ -16,6 +16,8 @@ private:
     Matrix<int> createSolutionMatrix(Matrix<int> m, int& gradesLoss, int& resultCost);
     int getDisciplineIndex(int index) const;
     bool addResult(Matrix<int> m, int cost) const;
+    void sendProgress();
+    int64_t factorial(int64_t fact) const;
 
 signals:
     void started();
@@ -29,6 +31,8 @@ private:
     Matrix<int> _grades = {};
     QList<float> _rates;
     QList<QPair<int, Matrix<int>>> _bestResults;
+    int64_t _stepNumber;
+    int64_t _totalSteps;
 };
 
 

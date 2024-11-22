@@ -18,7 +18,7 @@ Flickable {
         spacing: 12
 
         Label {
-            text: "Количество вариантов: <b>  " + core.bruteforce.disciplines + "!</b> = " + core.bruteforce.factorial
+            text: "Количество вариантов: <b>  " + core.bruteforce.people + "!</b> = " + core.bruteforce.factorial
         }
         RowLayout {
             spacing: 16
@@ -29,6 +29,7 @@ Flickable {
                     if(core.bruteforce.active) core.stopBruteforce()
                     else core.startBruteforce()
                 }
+                enabled: core.groupsModel.freePlaces == 0 || core.bruteforce.active
             }
             ProgressBar {
                 Layout.alignment: Qt.AlignVCenter
@@ -46,11 +47,12 @@ Flickable {
         }
 
         ListView {
+            id: listView
             Layout.fillWidth: true
             Layout.preferredHeight: contentHeight
             model: core.bruteforce.resultModel
             delegate: Item {
-                width: parent.width
+                width: listView.width
                 height: 30
                 Rectangle {
                     anchors.fill: parent
@@ -58,10 +60,32 @@ Flickable {
                     border.width: 1
                     border.color: palette.alternateBase
                 }
-                Label {
+                Row {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: _cost
+                    x: 6
+                    Label {
+                        text: "Отставание: "
+                        color: palette.mid
+                    }
+                    Label {
+                        text: _gradesLoss
+                    }
+                    Label {
+                        text: "   Оценка: "
+                        color: palette.mid
+                    }
+                    Label {
+                        text: _cost
+                    }
+                    Label {
+                        text: "   Решение: "
+                        color: palette.mid
+                    }
+                    Label {
+                        text: _solution
+                    }
                 }
+
             }
         }
     }

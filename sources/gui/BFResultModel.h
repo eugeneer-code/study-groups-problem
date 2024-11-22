@@ -24,6 +24,7 @@ public:
         int cost = 0;
         int gradesLoss = 0;
         bool match = false;
+        QString solution;
     };
 
     void clearData();
@@ -39,6 +40,7 @@ protected:
 
 private:
     void updateBBSolution();
+    QString solutionString(Matrix<int>& sol);
 
 private:
     QList<ListItem> _data;

@@ -18,7 +18,7 @@ QVariant BFResultModel::data(const QModelIndex &index, int role) const
     if(index.row() < 0 || index.row() >= _data.size()) return QVariant();
     auto& item = _data.at(index.row());
     switch(role){
-        case Solution: return "sol";
+        case Solution: return item.solution;
         case Cost: return item.cost;
         case GradesLoss: return item.gradesLoss;
         case Selected: return item.match;
@@ -40,7 +40,7 @@ QHash<int, QByteArray> BFResultModel::roleNames() const
 
 void BFResultModel::addSolution(int cost, int gradesLoss, Matrix<int> m)
 {
-    ListItem item{m, cost, gradesLoss,m == _bbSolution};
+    ListItem item{m, cost, gradesLoss,m == _bbSolution, solutionString(m)};
     if(_data.size() + 1 <= MAX_COUNT) {
         beginInsertRows({}, 0, 0);
         _data.append(item);
@@ -78,4 +78,16 @@ void BFResultModel::updateBBSolution()
         item.match = item.result == _bbSolution;
     }
     emit dataChanged(index(0), index(_data.size()-1), {Selected});
+}
+
+QString BFResultModel::solutionString(Matrix<int>& sol)
+{
+    QString res;
+    for(int row=0; row<sol.rows(); row++){
+        for(int col=0; col<sol.columns(); col++){
+            if(sol.get(row, col) == 0) continue;
+            res.append(QString("(%1,%2) ").arg(row).arg(col));
+        }
+    }
+    return res;
 }

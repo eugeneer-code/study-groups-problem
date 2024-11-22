@@ -30,9 +30,9 @@ void Bruteforce::setDisciplinesCount(int count)
     emit numChanged();
 }
 
-int Bruteforce::disciplines() const
+int Bruteforce::people() const
 {
-    return _disciplines;
+    return _people;
 }
 
 double Bruteforce::factorial() const
