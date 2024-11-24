@@ -4,7 +4,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-add_executable(${TARGET_NAME}
+add_executable(${TARGET_NAME} WIN32
     main.cpp
     Core.h
     Core.cpp
